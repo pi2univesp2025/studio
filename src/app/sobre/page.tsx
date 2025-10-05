@@ -157,8 +157,8 @@ export default function SobrePage() {
 
       <footer className="border-t py-6">
         <div className="container mx-auto px-4 flex justify-center items-center gap-6 text-sm">
-          <Button variant="link" asChild>
-            <Link href="/sobre" className="text-muted-foreground">SOBRE NÓS</Link>
+          <Button variant="link" className="text-muted-foreground" asChild>
+            <Link href="/sobre">SOBRE NÓS</Link>
           </Button>
           <Button variant="link" className="text-muted-foreground">AVALIAÇÕES</Button>
           <Popover>
@@ -178,3 +178,5 @@ export default function SobrePage() {
     </div>
   );
 }
+
+    
