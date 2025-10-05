@@ -193,10 +193,9 @@ export default function SobrePage() {
               </div>
             </PopoverContent>
           </Popover>
+          <Button variant="link" className="text-muted-foreground">Preciso de ajuda</Button>
         </div>
       </footer>
     </div>
   );
 }
-
-    
