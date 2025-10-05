@@ -29,6 +29,7 @@ const products = [
     id: 1,
     name: 'Blusa Estilosa',
     price: 'R$ 89,90',
+    category: 'BLUSAS',
     imageUrls: [
       'https://picsum.photos/seed/1/400/500',
       'https://picsum.photos/seed/11/400/500',
@@ -41,6 +42,7 @@ const products = [
     id: 2,
     name: 'Calça Jeans',
     price: 'R$ 129,90',
+    category: 'CALÇAS',
     imageUrls: [
       'https://picsum.photos/seed/2/400/500',
       'https://picsum.photos/seed/22/400/500',
@@ -53,6 +55,7 @@ const products = [
     id: 3,
     name: 'Vestido Floral',
     price: 'R$ 159,90',
+    category: 'VESTIDOS',
     imageUrls: [
       'https://picsum.photos/seed/3/400/500',
       'https://picsum.photos/seed/33/400/500',
@@ -65,6 +68,7 @@ const products = [
     id: 4,
     name: 'Bolsa de Couro',
     price: 'R$ 199,90',
+    category: 'BOLSAS',
     imageUrls: [
         'https://picsum.photos/seed/4/400/500',
         'https://picsum.photos/seed/44/400/500',
@@ -79,6 +83,12 @@ const products = [
 export default function Home() {
   const [favorites, setFavorites] = useState<number[]>([]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('TODOS');
+
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+    setShowFavoritesOnly(false); // Reset favorites filter when a category is clicked
+  };
 
   const toggleFavorite = (productId: number) => {
     setFavorites((prevFavorites) =>
@@ -87,10 +97,19 @@ export default function Home() {
         : [...prevFavorites, productId]
     );
   };
+  
+  const handleShowFavorites = () => {
+    setShowFavoritesOnly(!showFavoritesOnly);
+    setSelectedCategory('TODOS'); // Reset category filter when showing favorites
+  }
+
+  const categoryFilteredProducts = selectedCategory === 'TODOS'
+    ? products
+    : products.filter(p => p.category === selectedCategory);
 
   const displayedProducts = showFavoritesOnly
     ? products.filter((p) => favorites.includes(p.id))
-    : products;
+    : categoryFilteredProducts;
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -111,7 +130,7 @@ export default function Home() {
               </div>
             </div>
             <div className="hidden md:flex items-center gap-4">
-              <Button variant="ghost" className="flex items-center gap-2" onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}>
+              <Button variant="ghost" className="flex items-center gap-2" onClick={handleShowFavorites}>
                 <Heart className={`h-5 w-5 ${showFavoritesOnly ? 'text-red-500 fill-current' : ''}`} />
                 <span>FAVORITOS</span>
               </Button>
@@ -133,7 +152,7 @@ export default function Home() {
                   <DropdownMenuItem>
                     <Input type="search" placeholder="BUSCA" />
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}>
+                  <DropdownMenuItem onClick={handleShowFavorites}>
                     <Heart className={`mr-2 h-4 w-4 ${showFavoritesOnly ? 'text-red-500 fill-current' : ''}`} /> FAVORITOS
                   </DropdownMenuItem>
                   <DropdownMenuItem>
@@ -144,19 +163,19 @@ export default function Home() {
             </div>
           </div>
           <nav className="flex h-12 items-center justify-center gap-6">
-            <Button variant="ghost" className="text-sm font-medium" onClick={() => setShowFavoritesOnly(false)}>
+            <Button variant={selectedCategory === 'TODOS' ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick('TODOS')}>
               TODOS
             </Button>
-            <Button variant="ghost" className="text-sm font-medium">
+            <Button variant={selectedCategory === 'BLUSAS' ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick('BLUSAS')}>
               BLUSAS
             </Button>
-            <Button variant="ghost" className="text-sm font-medium">
+            <Button variant={selectedCategory === 'VESTIDOS' ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick('VESTIDOS')}>
               VESTIDOS
             </Button>
-            <Button variant="ghost" className="text-sm font-medium">
+            <Button variant={selectedCategory === 'CALÇAS' ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick('CALÇAS')}>
               CALÇAS
             </Button>
-            <Button variant="ghost" className="text-sm font-medium">
+            <Button variant={selectedCategory === 'CALÇADOS' ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick('CALÇADOS')}>
               CALÇADOS
             </Button>
             <DropdownMenu>
@@ -169,11 +188,11 @@ export default function Home() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>Acessórios</DropdownMenuItem>
-                <DropdownMenuItem>Bolsas</DropdownMenuItem>
-                <DropdownMenuItem>Decoração</DropdownMenuItem>
-                <DropdownMenuItem>Móveis</DropdownMenuItem>
-                <DropdownMenuItem>Brinquedos</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleCategoryClick('ACESSORIOS')}>Acessórios</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleCategoryClick('BOLSAS')}>Bolsas</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleCategoryClick('DECORACAO')}>Decoração</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleCategoryClick('MOVEIS')}>Móveis</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleCategoryClick('BRINQUEDOS')}>Brinquedos</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </nav>
@@ -193,7 +212,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="flex-1 flex items-center justify-center text-center text-muted-foreground">
-            <p>NENHUM ITEM ADICIONADO AOS FAVORITOS</p>
+            <p>{showFavoritesOnly ? "NENHUM ITEM ADICIONADO AOS FAVORITOS" : "Nenhum produto encontrado nesta categoria."}</p>
           </div>
         )}
       </main>
@@ -219,4 +238,5 @@ export default function Home() {
       </footer>
     </div>
   );
-}
+
+    
