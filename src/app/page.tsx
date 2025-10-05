@@ -153,8 +153,7 @@ export default function Home() {
 
       <Button
         variant="default"
-        className="fixed bottom-6 right-6 p-4 rounded-full shadow-lg flex flex-col items-center justify-center h-auto w-auto"
-        style={{backgroundColor: '#25D366', color: 'white'}}
+        className="fixed bottom-6 right-6 p-4 rounded-full shadow-lg flex flex-col items-center justify-center h-auto w-auto bg-[#25D366] hover:bg-[#25D366]/90 text-white"
       >
         <WhatsappIcon className="h-8 w-8 text-white" />
         <span className="text-xs mt-1">Compre Aqui</span>
