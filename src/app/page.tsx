@@ -11,6 +11,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import {
   Popover,
@@ -142,6 +143,10 @@ export default function Home() {
     displayedProducts = categoryFilteredProducts;
   }
 
+  const categories = ['TODOS', 'BLUSAS', 'VESTIDOS', 'CALÇAS', 'CALÇADOS'];
+  const otherCategories = ['ACESSORIOS', 'BOLSAS', 'DECORACAO', 'MOVEIS', 'BRINQUEDOS'];
+
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-50 w-full border-b bg-background">
@@ -200,6 +205,16 @@ export default function Home() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => handleCategoryClick('TODOS')}>TODOS</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleCategoryClick('BLUSAS')}>BLUSAS</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleCategoryClick('VESTIDOS')}>VESTIDOS</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleCategoryClick('CALÇAS')}>CALÇAS</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleCategoryClick('CALÇADOS')}>CALÇADOS</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  {otherCategories.map(cat => (
+                    <DropdownMenuItem key={cat} onClick={() => handleCategoryClick(cat)}>{cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase()}</DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleShowFavorites}>
                     <Heart className={`mr-2 h-4 w-4 ${showFavoritesOnly ? 'text-red-500 fill-current' : ''}`} /> FAVORITOS
                   </DropdownMenuItem>
@@ -210,22 +225,12 @@ export default function Home() {
               </DropdownMenu>
             </div>
           </div>
-          <nav className="flex h-12 items-center justify-center gap-6">
-            <Button variant={selectedCategory === 'TODOS' && !showFavoritesOnly && !showCartOnly ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick('TODOS')}>
-              TODOS
-            </Button>
-            <Button variant={selectedCategory === 'BLUSAS' ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick('BLUSAS')}>
-              BLUSAS
-            </Button>
-            <Button variant={selectedCategory === 'VESTIDOS' ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick('VESTIDOS')}>
-              VESTIDOS
-            </Button>
-            <Button variant={selectedCategory === 'CALÇAS' ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick('CALÇAS')}>
-              CALÇAS
-            </Button>
-            <Button variant={selectedCategory === 'CALÇADOS' ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick('CALÇADOS')}>
-              CALÇADOS
-            </Button>
+          <nav className="hidden md:flex h-12 items-center justify-center gap-6">
+            {categories.map(cat => (
+              <Button key={cat} variant={selectedCategory === cat && !showFavoritesOnly && !showCartOnly ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick(cat)}>
+                {cat}
+              </Button>
+            ))}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -236,11 +241,9 @@ export default function Home() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => handleCategoryClick('ACESSORIOS')}>Acessórios</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleCategoryClick('BOLSAS')}>Bolsas</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleCategoryClick('DECORACAO')}>Decoração</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleCategoryClick('MOVEIS')}>Móveis</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleCategoryClick('BRINQUEDOS')}>Brinquedos</DropdownMenuItem>
+                {otherCategories.map(cat => (
+                  <DropdownMenuItem key={cat} onClick={() => handleCategoryClick(cat)}>{cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase()}</DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </nav>
@@ -272,7 +275,7 @@ export default function Home() {
             ))}
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-center text-muted-foreground">
+          <div className="flex-1 flex items-center justify-center text-center text-muted-foreground py-16">
             <p>{showFavoritesOnly ? "NENHUM ITEM ADICIONADO AOS FAVORITOS" : showCartOnly ? "SEU CARRINHO ESTÁ VAZIO" : "Nenhum produto encontrado nesta categoria."}</p>
           </div>
         )}
@@ -320,7 +323,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    

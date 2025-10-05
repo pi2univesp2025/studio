@@ -8,6 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import {
   Popover,
@@ -29,6 +30,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 
 export default function SobrePage() {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  
+  const categories = ['TODOS', 'BLUSAS', 'VESTIDOS', 'CALÇAS', 'CALÇADOS'];
+  const otherCategories = ['ACESSORIOS', 'BOLSAS', 'DECORACAO', 'MOVEIS', 'BRINQUEDOS'];
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
        <header className="sticky top-0 z-50 w-full border-b bg-background">
@@ -83,7 +88,17 @@ export default function SobrePage() {
                     <Menu className="h-6 w-6" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                 <DropdownMenuContent align="end">
+                  {categories.map(cat => (
+                    <DropdownMenuItem key={cat} asChild><Link href="/">{cat}</Link></DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                  {otherCategories.map(cat => (
+                    <DropdownMenuItem key={cat} asChild>
+                      <Link href="/">{cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase()}</Link>
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <Package className="mr-2 h-4 w-4" /> MEUS PEDIDOS
                   </DropdownMenuItem>
@@ -91,22 +106,12 @@ export default function SobrePage() {
               </DropdownMenu>
             </div>
           </div>
-          <nav className="flex h-12 items-center justify-center gap-6">
-            <Button variant="ghost" className="text-sm font-medium" asChild>
-                <Link href="/">TODOS</Link>
-            </Button>
-            <Button variant="ghost" className="text-sm font-medium">
-              BLUSAS
-            </Button>
-            <Button variant="ghost" className="text-sm font-medium">
-              VESTIDOS
-            </Button>
-            <Button variant="ghost" className="text-sm font-medium">
-              CALÇAS
-            </Button>
-            <Button variant="ghost" className="text-sm font-medium">
-              CALÇADOS
-            </Button>
+          <nav className="hidden md:flex h-12 items-center justify-center gap-6">
+             {categories.map(cat => (
+              <Button key={cat} variant="ghost" className="text-sm font-medium" asChild>
+                  <Link href="/">{cat}</Link>
+              </Button>
+            ))}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -117,11 +122,11 @@ export default function SobrePage() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>Acessórios</DropdownMenuItem>
-                <DropdownMenuItem>Bolsas</DropdownMenuItem>
-                <DropdownMenuItem>Decoração</DropdownMenuItem>
-                <DropdownMenuItem>Móveis</DropdownMenuItem>
-                <DropdownMenuItem>Brinquedos</DropdownMenuItem>
+                {otherCategories.map(cat => (
+                    <DropdownMenuItem key={cat} asChild>
+                      <Link href="/">{cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase()}</Link>
+                    </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </nav>
@@ -208,7 +213,3 @@ export default function SobrePage() {
     </div>
   );
 }
-
-    
-
-    
