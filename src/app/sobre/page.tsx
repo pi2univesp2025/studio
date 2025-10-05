@@ -24,6 +24,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import Link from 'next/link';
 import { WhatsappIcon } from '@/components/ui/whatsapp-icon';
 import { useState } from 'react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 
 export default function SobrePage() {
@@ -180,15 +181,23 @@ export default function SobrePage() {
           <Button variant="link" className="text-muted-foreground" asChild>
             <Link href="/sobre">SOBRE NÓS</Link>
           </Button>
-          <Button variant="link" className="text-muted-foreground">AVALIAÇÕES</Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="link" className="text-muted-foreground">AVALIAÇÕES</Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Em breve...</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="link" className="text-muted-foreground">RECURSOS</Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-2">
               <div className="flex flex-col gap-2">
-                <Button variant="link" className="text-muted-foreground p-0 h-auto justify-start text-sm">Políticas de venda</Button>
-                <Button variant="link" className="text-muted-foreground p-0 h-auto justify-start text-sm">Políticas de troca</Button>
+                <Button variant="link" className="text-muted-foreground p-0 h-auto justify-start text-sm">Políticas de venda</Button>                <Button variant="link" className="text-muted-foreground p-0 h-auto justify-start text-sm">Políticas de troca</Button>
                 <Button variant="link" className="text-muted-foreground p-0 h-auto justify-start text-sm">Políticas de privacidade</Button>
               </div>
             </PopoverContent>
@@ -199,5 +208,7 @@ export default function SobrePage() {
     </div>
   );
 }
+
+    
 
     

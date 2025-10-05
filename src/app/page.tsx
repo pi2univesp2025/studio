@@ -29,6 +29,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { WhatsappIcon } from '@/components/ui/whatsapp-icon';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ProductCard } from '@/components/product-card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const products = [
   {
@@ -292,7 +293,16 @@ export default function Home() {
           <Button variant="link" className="text-muted-foreground" asChild>
             <Link href="/sobre">SOBRE NÓS</Link>
           </Button>
-          <Button variant="link" className="text-muted-foreground">AVALIAÇÕES</Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="link" className="text-muted-foreground">AVALIAÇÕES</Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Em breve...</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="link" className="text-muted-foreground">RECURSOS</Button>
@@ -310,5 +320,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
