@@ -319,24 +319,26 @@ export default function AdmPage() {
               <CardDescription>Personalize as cores do seu site para os modos claro e escuro. Use valores HSL (ex: 240 5.9% 10%).</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="mb-6 max-w-[200px]">
-                    <Label htmlFor="color-format" className="mb-2 block">Formato da Cor</Label>
-                    <Select value={colorFormat} onValueChange={setColorFormat}>
-                      <SelectTrigger id="color-format">
-                        <SelectValue placeholder="Selecione o formato" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="hsl">HSL</SelectItem>
-                        <SelectItem value="rgb">RGB</SelectItem>
-                        <SelectItem value="hex">HEX</SelectItem>
-                      </SelectContent>
-                    </Select>
+              <Tabs defaultValue="light">
+                 <div className="flex justify-between items-center mb-6">
+                    <TabsList className="grid grid-cols-2 w-fit">
+                      <TabsTrigger value="light">Modo Claro</TabsTrigger>
+                      <TabsTrigger value="dark">Modo Escuro</TabsTrigger>
+                    </TabsList>
+                    <div className="max-w-[200px]">
+                        <Label htmlFor="color-format" className="mb-2 block text-sm font-medium text-right">Formato da Cor</Label>
+                        <Select value={colorFormat} onValueChange={setColorFormat}>
+                          <SelectTrigger id="color-format">
+                            <SelectValue placeholder="Selecione o formato" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="hsl">HSL</SelectItem>
+                            <SelectItem value="rgb">RGB</SelectItem>
+                            <SelectItem value="hex">HEX</SelectItem>
+                          </SelectContent>
+                        </Select>
+                    </div>
                 </div>
-               <Tabs defaultValue="light">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="light">Modo Claro</TabsTrigger>
-                  <TabsTrigger value="dark">Modo Escuro</TabsTrigger>
-                </TabsList>
                 <TabsContent value="light" className="mt-6">
                   <div className="grid gap-6 sm:grid-cols-2">
                     <ColorPreviewInput
