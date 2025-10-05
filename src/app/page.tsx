@@ -35,6 +35,7 @@ const products = [
       'https://picsum.photos/seed/111/400/500',
     ],
     imageHint: 'stylish blouse',
+    description: 'Uma blusa estilosa para todas as ocasiões. Feita com tecido de alta qualidade para garantir conforto e durabilidade.'
   },
   {
     id: 2,
@@ -46,6 +47,7 @@ const products = [
       'https://picsum.photos/seed/222/400/500',
     ],
     imageHint: 'denim pants',
+    description: 'Calça jeans com corte moderno e caimento perfeito. Ideal para compor looks casuais e despojados.'
   },
   {
     id: 3,
@@ -57,6 +59,7 @@ const products = [
       'https://picsum.photos/seed/333/400/500',
     ],
     imageHint: 'floral dress',
+    description: 'Vestido floral leve e romântico. Perfeito para passeios ao ar livre e eventos durante o dia.'
   },
   {
     id: 4,
@@ -68,6 +71,7 @@ const products = [
         'https://picsum.photos/seed/444/400/500',
     ],
     imageHint: 'leather bag',
+    description: 'Bolsa de couro legítimo com design elegante e espaçosa. Um acessório indispensável para o dia a dia.'
   }
 ];
 
