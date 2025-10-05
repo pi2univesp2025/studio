@@ -32,6 +32,39 @@ export default function AdmPage() {
               </div>
             </CardContent>
           </Card>
+          
+          {/* Categorias */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Categorias</CardTitle>
+              <CardDescription>Adicione, remova ou edite as categorias dos produtos.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4">
+                <div className="flex items-center gap-2">
+                  <Input defaultValue="BLUSAS" />
+                  <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
+                </div>
+                 <div className="flex items-center gap-2">
+                  <Input defaultValue="VESTIDOS" />
+                  <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
+                </div>
+                 <div className="flex items-center gap-2">
+                  <Input defaultValue="CALÇAS" />
+                  <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
+                </div>
+                 <div className="flex items-center gap-2">
+                  <Input defaultValue="CALÇADOS" />
+                  <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Input defaultValue="BOLSAS" />
+                  <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
+                </div>
+              </div>
+              <Button className="mt-4">Adicionar Nova Categoria</Button>
+            </CardContent>
+          </Card>
 
           {/* Informações dos Produtos */}
           <Card>
