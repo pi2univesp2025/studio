@@ -191,12 +191,12 @@ export default function AdmPage() {
                         <div {...provided.droppableProps} ref={provided.innerRef} className="grid gap-4">
                         {categories.map(({ id, content }, index) => (
                             <Draggable key={id} draggableId={id} index={index}>
-                            {(provided) => (
+                            {(provided, snapshot) => (
                                 <div
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
-                                className="flex items-center gap-2"
+                                className={`flex items-center gap-2 p-2 rounded-md transition-shadow ${snapshot.isDragging ? 'shadow-lg bg-background' : 'shadow-none'}`}
                                 >
                                 <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
                                 <Input defaultValue={content} />
