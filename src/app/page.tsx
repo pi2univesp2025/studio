@@ -37,9 +37,9 @@ const products = [
     price: 'R$ 89,90',
     category: 'BLUSAS',
     imageUrls: [
-      'https://picsum.photos/seed/blusa1/400/500',
-      'https://picsum.photos/seed/blusa2/400/500',
-      'https://picsum.photos/seed/blusa3/400/500',
+      'https://picsum.photos/seed/tshirt1/400/500',
+      'https://picsum.photos/seed/tshirt2/400/500',
+      'https://picsum.photos/seed/tshirt3/400/500',
     ],
     imageHint: 'stylish blouse',
     description: 'Uma blusa estilosa para todas as ocasiões. Feita com tecido de alta qualidade para garantir conforto e durabilidade.'
@@ -50,9 +50,9 @@ const products = [
     price: 'R$ 129,90',
     category: 'CALÇAS',
     imageUrls: [
-      'https://picsum.photos/seed/calca1/400/500',
-      'https://picsum.photos/seed/calca2/400/500',
-      'https://picsum.photos/seed/calca3/400/500',
+      'https://picsum.photos/seed/jeans1/400/500',
+      'https://picsum.photos/seed/jeans2/400/500',
+      'https://picsum.photos/seed/jeans3/400/500',
     ],
     imageHint: 'denim pants',
     description: 'Calça jeans com corte moderno e caimento perfeito. Ideal para compor looks casuais e despojados.'
@@ -63,9 +63,9 @@ const products = [
     price: 'R$ 159,90',
     category: 'VESTIDOS',
     imageUrls: [
-      'https://picsum.photos/seed/vestido1/400/500',
-      'https://picsum.photos/seed/vestido2/400/500',
-      'https://picsum.photos/seed/vestido3/400/500',
+      'https://picsum.photos/seed/dress1/400/500',
+      'https://picsum.photos/seed/dress2/400/500',
+      'https://picsum.photos/seed/dress3/400/500',
     ],
     imageHint: 'floral dress',
     description: 'Vestido floral leve e romântico. Perfeito para passeios ao ar livre e eventos durante o dia.'
@@ -76,9 +76,9 @@ const products = [
     price: 'R$ 199,90',
     category: 'BOLSAS',
     imageUrls: [
-        'https://picsum.photos/seed/bolsa1/400/500',
-        'https://picsum.photos/seed/bolsa2/400/500',
-        'https://picsum.photos/seed/bolsa3/400/500',
+        'https://picsum.photos/seed/bag1/400/500',
+        'https://picsum.photos/seed/bag2/400/500',
+        'https://picsum.photos/seed/bag3/400/500',
     ],
     imageHint: 'leather bag',
     description: 'Bolsa de couro legítimo com design elegante e espaçosa. Um acessório indispensável para o dia a dia.'
@@ -305,7 +305,6 @@ export default function Home() {
               </div>
             </PopoverContent>
           </Popover>
-           <Button variant="link" className="text-muted-foreground">Preciso de ajuda</Button>
         </div>
       </footer>
     </div>
