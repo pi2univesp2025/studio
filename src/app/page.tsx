@@ -1,5 +1,8 @@
 
+'use client';
+
 import Image from 'next/image';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -69,6 +72,21 @@ const products = [
 
 
 export default function Home() {
+  const [favorites, setFavorites] = useState<number[]>([]);
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+
+  const toggleFavorite = (productId: number) => {
+    setFavorites((prevFavorites) =>
+      prevFavorites.includes(productId)
+        ? prevFavorites.filter((id) => id !== productId)
+        : [...prevFavorites, productId]
+    );
+  };
+
+  const displayedProducts = showFavoritesOnly
+    ? products.filter((p) => favorites.includes(p.id))
+    : products;
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-50 w-full border-b bg-background">
@@ -88,7 +106,7 @@ export default function Home() {
               </div>
             </div>
             <div className="hidden md:flex items-center gap-4">
-              <Button variant="ghost" className="flex items-center gap-2">
+              <Button variant="ghost" className="flex items-center gap-2" onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}>
                 <Heart className="h-5 w-5" />
                 <span>FAVORITOS</span>
               </Button>
@@ -110,7 +128,7 @@ export default function Home() {
                   <DropdownMenuItem>
                     <Input type="search" placeholder="BUSCA" />
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}>
                     <Heart className="mr-2 h-4 w-4" /> FAVORITOS
                   </DropdownMenuItem>
                   <DropdownMenuItem>
@@ -121,7 +139,7 @@ export default function Home() {
             </div>
           </div>
           <nav className="flex h-12 items-center justify-center gap-6">
-            <Button variant="ghost" className="text-sm font-medium">
+            <Button variant="ghost" className="text-sm font-medium" onClick={() => setShowFavoritesOnly(false)}>
               TODOS
             </Button>
             <Button variant="ghost" className="text-sm font-medium">
@@ -158,8 +176,13 @@ export default function Home() {
       </header>
       <main className="flex-1 container mx-auto px-4 my-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {displayedProducts.map((product) => (
+            <ProductCard 
+              key={product.id} 
+              product={product}
+              isFavorite={favorites.includes(product.id)}
+              onToggleFavorite={() => toggleFavorite(product.id)}
+            />
           ))}
         </div>
       </main>

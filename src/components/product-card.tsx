@@ -17,11 +17,12 @@ type Product = {
 
 interface ProductCardProps {
   product: Product;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, isFavorite, onToggleFavorite }: ProductCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isFavorite, setIsFavorite] = useState(false);
 
   const handleNextImage = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -35,10 +36,10 @@ export function ProductCard({ product }: ProductCardProps) {
     setCurrentImageIndex((prevIndex) => (prevIndex - 1 + product.imageUrls.length) % product.imageUrls.length);
   };
 
-  const toggleFavorite = (e: React.MouseEvent) => {
+  const handleToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    setIsFavorite((prev) => !prev);
+    onToggleFavorite();
   }
 
   return (
@@ -80,7 +81,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <h3 className="font-semibold text-lg">{product.name}</h3>
           <p className="text-muted-foreground">{product.price}</p>
         </div>
-        <Button variant="ghost" size="icon" onClick={toggleFavorite}>
+        <Button variant="ghost" size="icon" onClick={handleToggleFavorite}>
           <Heart className={`h-6 w-6 ${isFavorite ? 'text-red-500 fill-current' : ''}`} />
         </Button>
       </div>
