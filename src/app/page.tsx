@@ -122,6 +122,9 @@ export default function Home() {
           </div>
           <nav className="flex h-12 items-center justify-center gap-6">
             <Button variant="ghost" className="text-sm font-medium">
+              TODOS
+            </Button>
+            <Button variant="ghost" className="text-sm font-medium">
               BLUSAS
             </Button>
             <Button variant="ghost" className="text-sm font-medium">
