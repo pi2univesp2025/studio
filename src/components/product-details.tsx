@@ -32,16 +32,11 @@ export function ProductDetails({
           <p className="text-3xl font-semibold text-primary-foreground bg-primary/80 rounded-md px-4 py-2 inline-block">
             {price}
           </p>
-          <CardDescription className="text-base leading-relaxed">
+          {description && <CardDescription className="text-base leading-relaxed">
             {description}
-          </CardDescription>
+          </CardDescription>}
         </CardContent>
-        <CardFooter>
-          <Button size="lg" className="w-full">
-            <ShoppingCart className="mr-2 h-5 w-5" />
-            Add to Cart
-          </Button>
-        </CardFooter>
+        
       </Card>
     </div>
   );

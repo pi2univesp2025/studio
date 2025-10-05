@@ -9,7 +9,7 @@ const product = {
   name: 'Aether-Watch Model V',
   price: '$599.99',
   description:
-    'Experience the perfect blend of timeless design and cutting-edge technology. The Aether-Watch Model V features a scratch-resistant sapphire crystal face, a precision-engineered automatic movement, and a supple full-grain leather strap. Water-resistant up to 50 meters, it\'s the ideal companion for both boardrooms and back-country adventures. Stay connected with subtle smart notifications, all while enjoying the classic elegance of an analog timepiece.',
+    '',
 };
 
 export default function Home() {
@@ -23,7 +23,7 @@ export default function Home() {
         <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
           <a href="/" className="flex items-center gap-2 font-bold">
             <ShoppingCart className="h-6 w-6" />
-            <span className="text-lg">Bazaar Showcase</span>
+            <span className="text-lg">Protótipo Bazar</span>
           </a>
           <ThemeToggle />
         </div>
