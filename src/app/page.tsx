@@ -23,6 +23,7 @@ import {
   Search,
   ChevronDown,
   Menu,
+  ShoppingCart,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { WhatsappIcon } from '@/components/ui/whatsapp-icon';
@@ -89,11 +90,13 @@ export default function Home() {
   const [favorites, setFavorites] = useState<number[]>([]);
   const [shoppingCart, setShoppingCart] = useState<number[]>([]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [showCartOnly, setShowCartOnly] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('TODOS');
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
-    setShowFavoritesOnly(false); // Reset favorites filter when a category is clicked
+    setShowFavoritesOnly(false);
+    setShowCartOnly(false);
   };
 
   const toggleFavorite = (productId: number) => {
@@ -114,16 +117,28 @@ export default function Home() {
 
   const handleShowFavorites = () => {
     setShowFavoritesOnly(!showFavoritesOnly);
+    setShowCartOnly(false);
     setSelectedCategory('TODOS'); // Reset category filter when showing favorites
   }
+
+  const handleShowCart = () => {
+    setShowCartOnly(!showCartOnly);
+    setShowFavoritesOnly(false);
+    setSelectedCategory('TODOS');
+  };
 
   const categoryFilteredProducts = selectedCategory === 'TODOS'
     ? products
     : products.filter(p => p.category === selectedCategory);
-
-  const displayedProducts = showFavoritesOnly
-    ? products.filter((p) => favorites.includes(p.id))
-    : categoryFilteredProducts;
+  
+  let displayedProducts;
+  if (showFavoritesOnly) {
+    displayedProducts = products.filter((p) => favorites.includes(p.id));
+  } else if (showCartOnly) {
+    displayedProducts = products.filter((p) => shoppingCart.includes(p.id));
+  } else {
+    displayedProducts = categoryFilteredProducts;
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -144,11 +159,11 @@ export default function Home() {
               </div>
             </div>
             <div className="hidden md:flex items-center gap-4">
-              <Button variant="ghost" className="flex items-center gap-2" onClick={handleShowFavorites}>
+              <Button variant={showFavoritesOnly ? "secondary" : "ghost"} className="flex items-center gap-2" onClick={handleShowFavorites}>
                 <Heart className={`h-5 w-5 ${showFavoritesOnly ? 'text-red-500 fill-current' : ''}`} />
                 <span>FAVORITOS</span>
               </Button>
-              <Button variant="ghost" className="flex items-center gap-2">
+              <Button variant={showCartOnly ? "secondary" : "ghost"} className="flex items-center gap-2" onClick={handleShowCart}>
                 <Package className="h-5 w-5" />
                 <span>MEUS PEDIDOS</span>
               </Button>
@@ -169,7 +184,7 @@ export default function Home() {
                   <DropdownMenuItem onClick={handleShowFavorites}>
                     <Heart className={`mr-2 h-4 w-4 ${showFavoritesOnly ? 'text-red-500 fill-current' : ''}`} /> FAVORITOS
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleShowCart}>
                     <Package className="mr-2 h-4 w-4" /> MEUS PEDIDOS
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -177,7 +192,7 @@ export default function Home() {
             </div>
           </div>
           <nav className="flex h-12 items-center justify-center gap-6">
-            <Button variant={selectedCategory === 'TODOS' ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick('TODOS')}>
+            <Button variant={selectedCategory === 'TODOS' && !showFavoritesOnly && !showCartOnly ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick('TODOS')}>
               TODOS
             </Button>
             <Button variant={selectedCategory === 'BLUSAS' ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick('BLUSAS')}>
@@ -213,6 +228,17 @@ export default function Home() {
         </div>
       </header>
       <main className="flex-1 container mx-auto px-4 my-8">
+        <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl font-bold">
+                {showCartOnly ? "Seu Carrinho" : (showFavoritesOnly ? "Seus Favoritos" : "Todos os Produtos")}
+            </h2>
+            {showCartOnly && shoppingCart.length > 0 && (
+                <Button>
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                    COMPRAR
+                </Button>
+            )}
+        </div>
         {displayedProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {displayedProducts.map((product) => (
@@ -228,7 +254,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="flex-1 flex items-center justify-center text-center text-muted-foreground">
-            <p>{showFavoritesOnly ? "NENHUM ITEM ADICIONADO AOS FAVORITOS" : "Nenhum produto encontrado nesta categoria."}</p>
+            <p>{showFavoritesOnly ? "NENHUM ITEM ADICIONADO AOS FAVORITOS" : showCartOnly ? "SEU CARRINHO ESTÁ VAZIO" : "Nenhum produto encontrado nesta categoria."}</p>
           </div>
         )}
       </main>
@@ -265,8 +291,4 @@ export default function Home() {
       </footer>
     </div>
   );
-
-    
-
-
-    
+}
