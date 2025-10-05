@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { WhatsappIcon } from '@/components/ui/whatsapp-icon';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const products = [
   {
@@ -70,8 +71,10 @@ export default function Home() {
                 <Package className="h-5 w-5" />
                 <span>MEUS PEDIDOS</span>
               </Button>
+              <ThemeToggle />
             </div>
-            <div className="md:hidden">
+            <div className="md:hidden flex items-center gap-2">
+              <ThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon">
