@@ -1,9 +1,6 @@
 
 'use client';
 
-import Image from 'next/image';
-import { useState } from 'react';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -13,84 +10,20 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
-  Heart,
   Package,
   Search,
   ChevronDown,
   Menu,
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { WhatsappIcon } from '@/components/ui/whatsapp-icon';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { ProductCard } from '@/components/product-card';
-
-const products = [
-  {
-    id: 1,
-    name: 'Blusa Estilosa',
-    price: 'R$ 89,90',
-    imageUrls: [
-      'https://picsum.photos/seed/1/400/500',
-      'https://picsum.photos/seed/11/400/500',
-      'https://picsum.photos/seed/111/400/500',
-    ],
-    imageHint: 'stylish blouse',
-  },
-  {
-    id: 2,
-    name: 'Calça Jeans',
-    price: 'R$ 129,90',
-    imageUrls: [
-      'https://picsum.photos/seed/2/400/500',
-      'https://picsum.photos/seed/22/400/500',
-      'https://picsum.photos/seed/222/400/500',
-    ],
-    imageHint: 'denim pants',
-  },
-  {
-    id: 3,
-    name: 'Vestido Floral',
-    price: 'R$ 159,90',
-    imageUrls: [
-      'https://picsum.photos/seed/3/400/500',
-      'https://picsum.photos/seed/33/400/500',
-      'https://picsum.photos/seed/333/400/500',
-    ],
-    imageHint: 'floral dress',
-  },
-  {
-    id: 4,
-    name: 'Bolsa de Couro',
-    price: 'R$ 199,90',
-    imageUrls: [
-        'https://picsum.photos/seed/4/400/500',
-        'https://picsum.photos/seed/44/400/500',
-        'https://picsum.photos/seed/444/400/500',
-    ],
-    imageHint: 'leather bag',
-  }
-];
+import Link from 'next/link';
+import { WhatsappIcon } from '@/components/ui/whatsapp-icon';
 
 
-export default function Home() {
-  const [favorites, setFavorites] = useState<number[]>([]);
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-
-  const toggleFavorite = (productId: number) => {
-    setFavorites((prevFavorites) =>
-      prevFavorites.includes(productId)
-        ? prevFavorites.filter((id) => id !== productId)
-        : [...prevFavorites, productId]
-    );
-  };
-
-  const displayedProducts = showFavoritesOnly
-    ? products.filter((p) => favorites.includes(p.id))
-    : products;
-
+export default function SobrePage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-50 w-full border-b bg-background">
+       <header className="sticky top-0 z-50 w-full border-b bg-background">
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             <a href="/" className="text-2xl font-bold">
@@ -107,10 +40,6 @@ export default function Home() {
               </div>
             </div>
             <div className="hidden md:flex items-center gap-4">
-              <Button variant="ghost" className="flex items-center gap-2" onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}>
-                <Heart className={`h-5 w-5 ${showFavoritesOnly ? 'text-red-500 fill-current' : ''}`} />
-                <span>FAVORITOS</span>
-              </Button>
               <Button variant="ghost" className="flex items-center gap-2">
                 <Package className="h-5 w-5" />
                 <span>MEUS PEDIDOS</span>
@@ -129,9 +58,6 @@ export default function Home() {
                   <DropdownMenuItem>
                     <Input type="search" placeholder="BUSCA" />
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}>
-                    <Heart className={`mr-2 h-4 w-4 ${showFavoritesOnly ? 'text-red-500 fill-current' : ''}`} /> FAVORITOS
-                  </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Package className="mr-2 h-4 w-4" /> MEUS PEDIDOS
                   </DropdownMenuItem>
@@ -140,8 +66,8 @@ export default function Home() {
             </div>
           </div>
           <nav className="flex h-12 items-center justify-center gap-6">
-            <Button variant="ghost" className="text-sm font-medium" onClick={() => setShowFavoritesOnly(false)}>
-              TODOS
+            <Button variant="ghost" className="text-sm font-medium" asChild>
+                <Link href="/">TODOS</Link>
             </Button>
             <Button variant="ghost" className="text-sm font-medium">
               BLUSAS
@@ -176,24 +102,44 @@ export default function Home() {
         </div>
       </header>
       <main className="flex-1 container mx-auto px-4 my-8">
-        {displayedProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {displayedProducts.map((product) => (
-              <ProductCard 
-                key={product.id} 
-                product={product}
-                isFavorite={favorites.includes(product.id)}
-                onToggleFavorite={() => toggleFavorite(product.id)}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="flex-1 flex items-center justify-center text-center text-muted-foreground">
-            <p>NENHUM ITEM ADICIONADO AOS FAVORITOS</p>
-          </div>
-        )}
+        <div className="prose dark:prose-invert max-w-none">
+          <h1>Sobre Nós</h1>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+            nonummy, nisl vitae tempus aliquet, Olor sit amet, consectetur
+            adipiscing elit. Sed nonummy, nisl vitae tempus aliquet,
+            ipsum dolor sit amet, consectetur adipiscing elit. Sed nonummy,
+            nisl vitae tempus aliquet, ipsum dolor sit amet, consectetur
+            adipiscing elit. Sed nonummy, nisl vitae tempus aliquet,
+            ipsum dolor sit amet, consectetur adipiscing elit. Sed nonummy,
+            nisl vitae tempus aliquet.
+          </p>
+          <p>
+            Praesentium, voluptatem, occaecati, quos, quod, quae,
+            explicabo, quibusdam, eaque, similique, sunt, in, culpa,
+            qui, officia, deserunt, mollit, anim, id, est, laborum.
+            Et, harumd, und, relinques, facilis, est, et, expedita,
+            distinctio. Nam, liber, te, conscient, to, factor, tum,
+            poen, legum, odio, quae, ad, eam, per, se,acula, ut,
+            falli, in, libidine, et, tam, stabilis, amicitiae, ac,
+            ludum, et, vita, et, moribus, et, in, vita, et, moribus,
+            et.
+          </p>
+          <p>
+            Neque, porro, quisquam, est, qui, dolorem, ipsum, quia,
+            dolor, sit, amet, consectetur, adipisci, velit, sed,
+            quia, non, numquam, eius, modi, tempora, incidunt, ut,
+            labore, et, dolore, magnam, aliquam, quaerat, voluptatem.
+            Ut, enim, ad, minima, veniam, quis, nostrum,
+            exercitationem, ullam, corporis, suscipit, laboriosam,
+            nisi, ut, aliquid, ex, ea, commodi, consequatur? Quis,
+            autem, vel, eum, iure, reprehenderit, qui, in, ea,
+            voluptate, velit, esse, quam, nihil, molestiae,
+            consequatur, vel, illum, qui, dolorem, eum, fugiat, quo,
+            voluptas, nulla, pariatur?
+          </p>
+        </div>
       </main>
-
       <Button
         variant="default"
         className="fixed bottom-6 right-6 p-4 rounded-full shadow-lg flex flex-col items-center justify-center h-auto w-auto bg-[#25D366] hover:bg-[#25D366]/90 text-white dark:text-white"
