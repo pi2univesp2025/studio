@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -142,9 +143,14 @@ export default function Home() {
                   />
                 </div>
               </CardContent>
-              <div className="p-4 bg-background">
-                <h3 className="font-semibold text-lg">{product.name}</h3>
-                <p className="text-muted-foreground">{product.price}</p>
+              <div className="p-4 bg-background flex items-start justify-between">
+                <div>
+                  <h3 className="font-semibold text-lg">{product.name}</h3>
+                  <p className="text-muted-foreground">{product.price}</p>
+                </div>
+                <Button variant="ghost" size="icon">
+                  <Heart className="h-6 w-6" />
+                </Button>
               </div>
             </Card>
           ))}
