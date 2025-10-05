@@ -44,6 +44,13 @@ export default function LoginPage() {
           </div>
         </CardContent>
       </Card>
+      <footer className="absolute bottom-0 w-full border-t py-6 mt-8">
+        <div className="container mx-auto px-4 flex justify-center items-center">
+          <Button variant="link" className="text-muted-foreground">Preciso de ajuda</Button>
+        </div>
+      </footer>
     </div>
   );
 }
+
+    

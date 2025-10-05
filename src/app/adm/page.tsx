@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import Link from 'next/link';
 
 const initialCategories = [
   'BLUSAS',
@@ -155,8 +156,8 @@ export default function AdmPage() {
 
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-background p-4 sm:p-8">
-      <div className="w-full max-w-4xl">
+    <div className="flex min-h-screen flex-col items-center bg-background">
+      <div className="flex-1 w-full max-w-4xl p-4 sm:p-8">
         <header className="mb-8">
           <h1 className="text-3xl font-bold">Painel de Administração</h1>
           <p className="text-muted-foreground">Edite as informações do seu site aqui.</p>
@@ -407,6 +408,13 @@ export default function AdmPage() {
           </div>
         </div>
       </div>
+       <footer className="w-full border-t py-6 mt-8">
+        <div className="container mx-auto px-4 flex justify-center items-center">
+          <Button variant="link" className="text-muted-foreground">Preciso de ajuda</Button>
+        </div>
+      </footer>
     </div>
   );
 }
+
+    
