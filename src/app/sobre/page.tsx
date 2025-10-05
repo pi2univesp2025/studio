@@ -23,9 +23,11 @@ import {
 import { ThemeToggle } from '@/components/theme-toggle';
 import Link from 'next/link';
 import { WhatsappIcon } from '@/components/ui/whatsapp-icon';
+import { useState } from 'react';
 
 
 export default function SobrePage() {
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
        <header className="sticky top-0 z-50 w-full border-b bg-background">
@@ -34,24 +36,45 @@ export default function SobrePage() {
             <a href="/" className="text-2xl font-bold">
               Protótipo Bazar
             </a>
-            <div className="hidden md:flex flex-1 max-w-md items-center gap-4">
-              <div className="relative flex-1">
-                <Input
-                  type="search"
-                  placeholder="BUSCA"
-                  className="pl-10"
-                />
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            {showMobileSearch ? (
+               <div className="absolute top-0 left-0 w-full p-4 bg-background border-b z-50 md:hidden">
+                <div className="relative">
+                  <Input
+                    type="search"
+                    placeholder="BUSCA"
+                    className="w-full pl-10"
+                    autoFocus
+                    onBlur={() => setShowMobileSearch(false)}
+                  />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                </div>
               </div>
-            </div>
-            <div className="hidden md:flex items-center gap-4">
-              <Button variant="ghost" className="flex items-center gap-2">
-                <Package className="h-5 w-5" />
-                <span>MEUS PEDIDOS</span>
-              </Button>
-              <ThemeToggle />
-            </div>
+            ) : (
+              <>
+                <div className="hidden md:flex flex-1 max-w-md items-center gap-4">
+                  <div className="relative flex-1">
+                    <Input
+                      type="search"
+                      placeholder="BUSCA"
+                      className="pl-10"
+                    />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  </div>
+                </div>
+                <div className="hidden md:flex items-center gap-4">
+                  <Button variant="ghost" className="flex items-center gap-2">
+                    <Package className="h-5 w-5" />
+                    <span>MEUS PEDIDOS</span>
+                  </Button>
+                  <ThemeToggle />
+                </div>
+              </>
+            )}
+
             <div className="md:hidden flex items-center gap-2">
+              <Button variant="ghost" size="icon" onClick={() => setShowMobileSearch(true)}>
+                <Search className="h-6 w-6" />
+              </Button>
               <ThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -60,9 +83,6 @@ export default function SobrePage() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
-                    <Input type="search" placeholder="BUSCA" />
-                  </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Package className="mr-2 h-4 w-4" /> MEUS PEDIDOS
                   </DropdownMenuItem>
@@ -145,7 +165,7 @@ export default function SobrePage() {
             </div>
         </div>
       </main>
-      <div className="fixed bottom-[90px] right-6 flex flex-col items-center z-50 gap-2">
+      <div className="fixed bottom-6 right-6 flex flex-col items-center z-50 gap-2">
         <span className="bg-background text-foreground text-sm font-medium px-3 py-1.5 rounded-full shadow-lg">Compre Aqui</span>
         <Button
           variant="default"

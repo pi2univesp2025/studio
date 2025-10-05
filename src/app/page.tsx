@@ -37,9 +37,9 @@ const products = [
     price: 'R$ 89,90',
     category: 'BLUSAS',
     imageUrls: [
-      'https://picsum.photos/seed/1/400/500',
-      'https://picsum.photos/seed/11/400/500',
-      'https://picsum.photos/seed/111/400/500',
+      'https://picsum.photos/seed/blusa1/400/500',
+      'https://picsum.photos/seed/blusa2/400/500',
+      'https://picsum.photos/seed/blusa3/400/500',
     ],
     imageHint: 'stylish blouse',
     description: 'Uma blusa estilosa para todas as ocasiões. Feita com tecido de alta qualidade para garantir conforto e durabilidade.'
@@ -50,9 +50,9 @@ const products = [
     price: 'R$ 129,90',
     category: 'CALÇAS',
     imageUrls: [
-      'https://picsum.photos/seed/2/400/500',
-      'https://picsum.photos/seed/22/400/500',
-      'https://picsum.photos/seed/222/400/500',
+      'https://picsum.photos/seed/calca1/400/500',
+      'https://picsum.photos/seed/calca2/400/500',
+      'https://picsum.photos/seed/calca3/400/500',
     ],
     imageHint: 'denim pants',
     description: 'Calça jeans com corte moderno e caimento perfeito. Ideal para compor looks casuais e despojados.'
@@ -63,9 +63,9 @@ const products = [
     price: 'R$ 159,90',
     category: 'VESTIDOS',
     imageUrls: [
-      'https://picsum.photos/seed/3/400/500',
-      'https://picsum.photos/seed/33/400/500',
-      'https://picsum.photos/seed/333/400/500',
+      'https://picsum.photos/seed/vestido1/400/500',
+      'https://picsum.photos/seed/vestido2/400/500',
+      'https://picsum.photos/seed/vestido3/400/500',
     ],
     imageHint: 'floral dress',
     description: 'Vestido floral leve e romântico. Perfeito para passeios ao ar livre e eventos durante o dia.'
@@ -76,9 +76,9 @@ const products = [
     price: 'R$ 199,90',
     category: 'BOLSAS',
     imageUrls: [
-        'https://picsum.photos/seed/4/400/500',
-        'https://picsum.photos/seed/44/400/500',
-        'https://picsum.photos/seed/444/400/500',
+        'https://picsum.photos/seed/bolsa1/400/500',
+        'https://picsum.photos/seed/bolsa2/400/500',
+        'https://picsum.photos/seed/bolsa3/400/500',
     ],
     imageHint: 'leather bag',
     description: 'Bolsa de couro legítimo com design elegante e espaçosa. Um acessório indispensável para o dia a dia.'
@@ -92,6 +92,7 @@ export default function Home() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showCartOnly, setShowCartOnly] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('TODOS');
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
@@ -148,28 +149,48 @@ export default function Home() {
             <a href="/" className="text-2xl font-bold">
               Protótipo Bazar
             </a>
-            <div className="hidden md:flex flex-1 max-w-md items-center gap-4">
-              <div className="relative flex-1">
-                <Input
-                  type="search"
-                  placeholder="BUSCA"
-                  className="pl-10"
-                />
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+             {showMobileSearch ? (
+              <div className="absolute top-0 left-0 w-full p-4 bg-background border-b z-50 md:hidden">
+                <div className="relative">
+                  <Input
+                    type="search"
+                    placeholder="BUSCA"
+                    className="w-full pl-10"
+                    autoFocus
+                    onBlur={() => setShowMobileSearch(false)}
+                  />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                </div>
               </div>
-            </div>
-            <div className="hidden md:flex items-center gap-4">
-              <Button variant={showFavoritesOnly ? "secondary" : "ghost"} className="flex items-center gap-2" onClick={handleShowFavorites}>
-                <Heart className={`h-5 w-5 ${showFavoritesOnly ? 'text-red-500 fill-current' : ''}`} />
-                <span>FAVORITOS</span>
-              </Button>
-              <Button variant={showCartOnly ? "secondary" : "ghost"} className="flex items-center gap-2" onClick={handleShowCart}>
-                <Package className="h-5 w-5" />
-                <span>MEUS PEDIDOS</span>
-              </Button>
-              <ThemeToggle />
-            </div>
+            ) : (
+            <>
+              <div className="hidden md:flex flex-1 max-w-md items-center gap-4">
+                <div className="relative flex-1">
+                  <Input
+                    type="search"
+                    placeholder="BUSCA"
+                    className="pl-10"
+                  />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                </div>
+              </div>
+              <div className="hidden md:flex items-center gap-4">
+                <Button variant={showFavoritesOnly ? "secondary" : "ghost"} className="flex items-center gap-2" onClick={handleShowFavorites}>
+                  <Heart className={`h-5 w-5 ${showFavoritesOnly ? 'text-red-500 fill-current' : ''}`} />
+                  <span>FAVORITOS</span>
+                </Button>
+                <Button variant={showCartOnly ? "secondary" : "ghost"} className="flex items-center gap-2" onClick={handleShowCart}>
+                  <Package className="h-5 w-5" />
+                  <span>MEUS PEDIDOS</span>
+                </Button>
+                <ThemeToggle />
+              </div>
+            </>
+            )}
             <div className="md:hidden flex items-center gap-2">
+               <Button variant="ghost" size="icon" onClick={() => setShowMobileSearch(true)}>
+                <Search className="h-6 w-6" />
+              </Button>
               <ThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -178,9 +199,6 @@ export default function Home() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
-                    <Input type="search" placeholder="BUSCA" />
-                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleShowFavorites}>
                     <Heart className={`mr-2 h-4 w-4 ${showFavoritesOnly ? 'text-red-500 fill-current' : ''}`} /> FAVORITOS
                   </DropdownMenuItem>
@@ -259,7 +277,7 @@ export default function Home() {
         )}
       </main>
 
-      <div className="fixed bottom-[90px] right-6 flex flex-col items-center z-50 gap-2">
+      <div className="fixed bottom-6 right-6 flex flex-col items-center z-50 gap-2">
         <span className="bg-background text-foreground text-sm font-medium px-3 py-1.5 rounded-full shadow-lg">Compre Aqui</span>
         <Button
           variant="default"
