@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
+  DialogClose,
 } from '@/components/ui/dialog';
 import { Heart, ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
 
@@ -29,9 +30,11 @@ interface ProductCardProps {
   product: Product;
   isFavorite: boolean;
   onToggleFavorite: () => void;
+  isInCart: boolean;
+  onToggleInCart: () => void;
 }
 
-export function ProductCard({ product, isFavorite, onToggleFavorite }: ProductCardProps) {
+export function ProductCard({ product, isFavorite, onToggleFavorite, isInCart, onToggleInCart }: ProductCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleNextImage = (e: React.MouseEvent) => {
@@ -52,6 +55,11 @@ export function ProductCard({ product, isFavorite, onToggleFavorite }: ProductCa
     onToggleFavorite();
   }
 
+  const handleBuyClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleInCart();
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -66,6 +74,11 @@ export function ProductCard({ product, isFavorite, onToggleFavorite }: ProductCa
                 data-ai-hint={product.imageHint}
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
+               {isInCart && (
+                <div className="absolute top-2 right-2 bg-background/80 rounded-full p-1.5">
+                  <ShoppingCart className="h-5 w-5 text-primary" />
+                </div>
+              )}
               {product.imageUrls.length > 1 && (
                 <>
                   <Button
@@ -135,9 +148,11 @@ export function ProductCard({ product, isFavorite, onToggleFavorite }: ProductCa
         </DialogHeader>
         <p>{product.description}</p>
         <DialogFooter>
-          <Button className="w-full" onClick={(e) => e.stopPropagation()}>
-            <ShoppingCart className="mr-2 h-4 w-4" /> COMPRAR
-          </Button>
+          <DialogClose asChild>
+            <Button className="w-full" onClick={handleBuyClick}>
+              <ShoppingCart className="mr-2 h-4 w-4" /> COMPRAR
+            </Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -87,6 +87,7 @@ const products = [
 
 export default function Home() {
   const [favorites, setFavorites] = useState<number[]>([]);
+  const [shoppingCart, setShoppingCart] = useState<number[]>([]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('TODOS');
 
@@ -103,6 +104,14 @@ export default function Home() {
     );
   };
   
+  const toggleInCart = (productId: number) => {
+    setShoppingCart((prevCart) =>
+      prevCart.includes(productId)
+        ? prevCart.filter((id) => id !== productId)
+        : [...prevCart, productId]
+    );
+  };
+
   const handleShowFavorites = () => {
     setShowFavoritesOnly(!showFavoritesOnly);
     setSelectedCategory('TODOS'); // Reset category filter when showing favorites
@@ -212,6 +221,8 @@ export default function Home() {
                 product={product}
                 isFavorite={favorites.includes(product.id)}
                 onToggleFavorite={() => toggleFavorite(product.id)}
+                isInCart={shoppingCart.includes(product.id)}
+                onToggleInCart={() => toggleInCart(product.id)}
               />
             ))}
           </div>
