@@ -22,6 +22,13 @@ const initialCategories = [
 export default function AdmPage() {
   const [categories, setCategories] = useState(initialCategories);
 
+  const [lightPrimary, setLightPrimary] = useState('240 5.9% 10%');
+  const [lightBackground, setLightBackground] = useState('0 0% 100%');
+  const [lightAccent, setLightAccent] = useState('0 0% 96.1%');
+  const [darkPrimary, setDarkPrimary] = useState('0 0% 98%');
+  const [darkBackground, setDarkBackground] = useState('240 10% 3.9%');
+  const [darkAccent, setDarkAccent] = useState('0 0% 14.9%');
+
   const moveCategory = (index: number, direction: 'up' | 'down') => {
     const newCategories = [...categories];
     const newIndex = direction === 'up' ? index - 1 : index + 1;
@@ -33,6 +40,16 @@ export default function AdmPage() {
       setCategories(newCategories);
     }
   };
+
+  const ColorPreviewInput = ({ label, id, value, onChange }: { label: string, id: string, value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
+    <div className="grid gap-2">
+      <Label htmlFor={id}>{label}</Label>
+      <div className="flex items-center gap-2">
+        <Input id={id} value={value} onChange={onChange} />
+        <div className="h-10 w-10 rounded-md border" style={{ backgroundColor: `hsl(${value})` }} />
+      </div>
+    </div>
+  );
 
   return (
     <div className="flex min-h-screen flex-col items-center bg-background p-4 sm:p-8">
@@ -113,7 +130,7 @@ export default function AdmPage() {
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="product-images-1">URLs das Imagens (separadas por vírgula)</Label>
-                        <Textarea id="product-images-1" defaultValue="https://picsum.photos/seed/1/400/500, https://picsum.photos/seed/11/400/500" />
+                        <Textarea id="product-images-1" defaultValue="https://picsum.photos/seed/tshirt1/400/500, https://picsum.photos/seed/tshirt2/400/500, https://picsum.photos/seed/tshirt3/400/500" />
                       </div>
                        <div className="grid gap-2">
                         <Label htmlFor="product-tags-1">Tags (separadas por vírgula)</Label>
@@ -147,7 +164,7 @@ export default function AdmPage() {
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="product-images-2">URLs das Imagens (separadas por vírgula)</Label>
-                        <Textarea id="product-images-2" defaultValue="https://picsum.photos/seed/2/400/500" />
+                        <Textarea id="product-images-2" defaultValue="https://picsum.photos/seed/jeans1/400/500, https://picsum.photos/seed/jeans2/400/500, https://picsum.photos/seed/jeans3/400/500" />
                       </div>
                        <div className="grid gap-2">
                         <Label htmlFor="product-tags-2">Tags (separadas por vírgula)</Label>
@@ -204,34 +221,46 @@ export default function AdmPage() {
                 </TabsList>
                 <TabsContent value="light" className="mt-6">
                   <div className="grid gap-6 sm:grid-cols-2">
-                    <div className="grid gap-2">
-                      <Label htmlFor="color-primary-light">Cor Primária</Label>
-                      <Input id="color-primary-light" defaultValue="240 5.9% 10%" />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="color-background-light">Cor do Fundo</Label>
-                      <Input id="color-background-light" defaultValue="0 0% 100%" />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="color-accent-light">Cor de Destaque</Label>
-                      <Input id="color-accent-light" defaultValue="0 0% 96.1%" />
-                    </div>
+                    <ColorPreviewInput
+                      label="Cor Primária"
+                      id="color-primary-light"
+                      value={lightPrimary}
+                      onChange={(e) => setLightPrimary(e.target.value)}
+                    />
+                    <ColorPreviewInput
+                      label="Cor do Fundo"
+                      id="color-background-light"
+                      value={lightBackground}
+                      onChange={(e) => setLightBackground(e.target.value)}
+                    />
+                     <ColorPreviewInput
+                      label="Cor de Destaque"
+                      id="color-accent-light"
+                      value={lightAccent}
+                      onChange={(e) => setLightAccent(e.target.value)}
+                    />
                   </div>
                 </TabsContent>
                 <TabsContent value="dark" className="mt-6">
                   <div className="grid gap-6 sm:grid-cols-2">
-                     <div className="grid gap-2">
-                      <Label htmlFor="color-primary-dark">Cor Primária</Label>
-                      <Input id="color-primary-dark" defaultValue="0 0% 98%" />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="color-background-dark">Cor do Fundo</Label>
-                      <Input id="color-background-dark" defaultValue="240 10% 3.9%" />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="color-accent-dark">Cor de Destaque</Label>
-                      <Input id="color-accent-dark" defaultValue="0 0% 14.9%" />
-                    </div>
+                     <ColorPreviewInput
+                        label="Cor Primária"
+                        id="color-primary-dark"
+                        value={darkPrimary}
+                        onChange={(e) => setDarkPrimary(e.target.value)}
+                      />
+                      <ColorPreviewInput
+                        label="Cor do Fundo"
+                        id="color-background-dark"
+                        value={darkBackground}
+                        onChange={(e) => setDarkBackground(e.target.value)}
+                      />
+                      <ColorPreviewInput
+                        label="Cor de Destaque"
+                        id="color-accent-dark"
+                        value={darkAccent}
+                        onChange={(e) => setDarkAccent(e.target.value)}
+                      />
                   </div>
                 </TabsContent>
               </Tabs>
