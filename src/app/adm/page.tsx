@@ -7,10 +7,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ArrowUpDown, Trash2 } from 'lucide-react';
+import { GripVertical, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 const initialCategories = [
   'BLUSAS',
@@ -69,7 +70,7 @@ function hslToHex(h: number, s: number, l: number) {
 
 
 export default function AdmPage() {
-  const [categories, setCategories] = useState(initialCategories);
+  const [categories, setCategories] = useState(initialCategories.map((cat, index) => ({ id: `cat-${index}`, content: cat })));
 
   const [lightPrimary, setLightPrimary] = useState('240 5.9% 10%');
   const [lightBackground, setLightBackground] = useState('0 0% 100%');
@@ -80,17 +81,14 @@ export default function AdmPage() {
 
   const [colorFormat, setColorFormat] = useState('hsl');
 
-  const moveCategory = (index: number, direction: 'up' | 'down') => {
-    const newCategories = [...categories];
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
+  const handleOnDragEnd = (result: any) => {
+    if (!result.destination) return;
+    const items = Array.from(categories);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
 
-    if (newIndex >= 0 && newIndex < newCategories.length) {
-      const temp = newCategories[index];
-      newCategories[index] = newCategories[newIndex];
-      newCategories[newIndex] = temp;
-      setCategories(newCategories);
-    }
-  };
+    setCategories(items);
+  }
 
   const getBackgroundColor = (value: string) => {
     if (colorFormat === 'hsl') {
@@ -186,23 +184,34 @@ export default function AdmPage() {
               <CardDescription>Adicione, remova ou edite e reordene as categorias dos produtos.</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4">
-                {categories.map((category, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <div className="flex flex-col">
-                      <button onClick={() => moveCategory(index, 'up')} disabled={index === 0} className="p-1 disabled:opacity-50 disabled:cursor-not-allowed">
-                        <ArrowUpDown className="h-3 w-3 transform -rotate-180" />
-                      </button>
-                      <button onClick={() => moveCategory(index, 'down')} disabled={index === categories.length - 1} className="p-1 disabled:opacity-50 disabled:cursor-not-allowed">
-                        <ArrowUpDown className="h-3 w-3" />
-                      </button>
-                    </div>
-                    <Input defaultValue={category} />
-                    <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
-                  </div>
-                ))}
-              </div>
-              <Button className="mt-4">Adicionar Nova Categoria</Button>
+                <DragDropContext onDragEnd={handleOnDragEnd}>
+                    <Droppable droppableId="categories">
+                    {(provided) => (
+                        <div {...provided.droppableProps} ref={provided.innerRef} className="grid gap-4">
+                        {categories.map(({ id, content }, index) => (
+                            <Draggable key={id} draggableId={id} index={index}>
+                            {(provided) => (
+                                <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className="flex items-center gap-2"
+                                >
+                                <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
+                                <Input defaultValue={content} />
+                                <Button variant="destructive" size="icon">
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                                </div>
+                            )}
+                            </Draggable>
+                        ))}
+                        {provided.placeholder}
+                        </div>
+                    )}
+                    </Droppable>
+                </DragDropContext>
+                <Button className="mt-4">Adicionar Nova Categoria</Button>
             </CardContent>
           </Card>
 
@@ -401,5 +410,3 @@ export default function AdmPage() {
     </div>
   );
 }
-
-    
