@@ -18,29 +18,53 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { WhatsappIcon } from '@/components/ui/whatsapp-icon';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { ProductCard } from '@/components/product-card';
 
 const products = [
   {
     id: 1,
     name: 'Blusa Estilosa',
     price: 'R$ 89,90',
-    imageUrl: 'https://picsum.photos/seed/1/400/500',
+    imageUrls: [
+      'https://picsum.photos/seed/1/400/500',
+      'https://picsum.photos/seed/11/400/500',
+      'https://picsum.photos/seed/111/400/500',
+    ],
     imageHint: 'stylish blouse',
   },
   {
     id: 2,
     name: 'Calça Jeans',
     price: 'R$ 129,90',
-    imageUrl: 'https://picsum.photos/seed/2/400/500',
+    imageUrls: [
+      'https://picsum.photos/seed/2/400/500',
+      'https://picsum.photos/seed/22/400/500',
+      'https://picsum.photos/seed/222/400/500',
+    ],
     imageHint: 'denim pants',
   },
   {
     id: 3,
     name: 'Vestido Floral',
     price: 'R$ 159,90',
-    imageUrl: 'https://picsum.photos/seed/3/400/500',
+    imageUrls: [
+      'https://picsum.photos/seed/3/400/500',
+      'https://picsum.photos/seed/33/400/500',
+      'https://picsum.photos/seed/333/400/500',
+    ],
     imageHint: 'floral dress',
   },
+  {
+    id: 4,
+    name: 'Bolsa de Couro',
+    price: 'R$ 199,90',
+    imageUrls: [
+        'https://picsum.photos/seed/4/400/500',
+        'https://picsum.photos/seed/44/400/500',
+        'https://picsum.photos/seed/444/400/500',
+    ],
+    imageHint: 'leather bag',
+  }
 ];
 
 
@@ -51,7 +75,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             <a href="/" className="text-2xl font-bold">
-              LOGO
+              Protótipo Bazar
             </a>
             <div className="hidden md:flex flex-1 max-w-md items-center gap-4">
               <div className="relative flex-1">
@@ -122,6 +146,8 @@ export default function Home() {
                 <DropdownMenuItem>Acessórios</DropdownMenuItem>
                 <DropdownMenuItem>Bolsas</DropdownMenuItem>
                 <DropdownMenuItem>Decoração</DropdownMenuItem>
+                <DropdownMenuItem>Móveis</DropdownMenuItem>
+                <DropdownMenuItem>Brinquedos</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </nav>
@@ -130,36 +156,14 @@ export default function Home() {
       <main className="flex-1 container mx-auto px-4 my-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.map((product) => (
-            <Card key={product.id} className="overflow-hidden group">
-              <CardContent className="p-0">
-                <div className="aspect-[4/5] w-full relative">
-                  <Image
-                    src={product.imageUrl}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                    data-ai-hint={product.imageHint}
-                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  />
-                </div>
-              </CardContent>
-              <div className="p-4 bg-background flex items-start justify-between">
-                <div>
-                  <h3 className="font-semibold text-lg">{product.name}</h3>
-                  <p className="text-muted-foreground">{product.price}</p>
-                </div>
-                <Button variant="ghost" size="icon">
-                  <Heart className="h-6 w-6" />
-                </Button>
-              </div>
-            </Card>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </main>
 
       <Button
         variant="default"
-        className="fixed bottom-6 right-6 p-4 rounded-full shadow-lg flex flex-col items-center justify-center h-auto w-auto bg-[#25D366] hover:bg-[#25D366]/90 text-white"
+        className="fixed bottom-6 right-6 p-4 rounded-full shadow-lg flex flex-col items-center justify-center h-auto w-auto bg-[#25D366] hover:bg-[#25D366]/90 text-white dark:text-white"
       >
         <WhatsappIcon className="h-8 w-8 text-white" />
         <span className="text-xs mt-1">Compre Aqui</span>
