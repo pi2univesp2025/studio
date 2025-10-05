@@ -107,7 +107,7 @@ export default function Home() {
             </div>
             <div className="hidden md:flex items-center gap-4">
               <Button variant="ghost" className="flex items-center gap-2" onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}>
-                <Heart className="h-5 w-5" />
+                <Heart className={`h-5 w-5 ${showFavoritesOnly ? 'text-red-500 fill-current' : ''}`} />
                 <span>FAVORITOS</span>
               </Button>
               <Button variant="ghost" className="flex items-center gap-2">
@@ -129,7 +129,7 @@ export default function Home() {
                     <Input type="search" placeholder="BUSCA" />
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}>
-                    <Heart className="mr-2 h-4 w-4" /> FAVORITOS
+                    <Heart className={`mr-2 h-4 w-4 ${showFavoritesOnly ? 'text-red-500 fill-current' : ''}`} /> FAVORITOS
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Package className="mr-2 h-4 w-4" /> MEUS PEDIDOS
@@ -187,7 +187,7 @@ export default function Home() {
             ))}
           </div>
         ) : (
-          <div className="text-center text-muted-foreground">
+          <div className="flex-1 flex items-center justify-center text-center text-muted-foreground">
             <p>NENHUM ITEM ADICIONADO AOS FAVORITOS</p>
           </div>
         )}
@@ -197,7 +197,7 @@ export default function Home() {
         variant="default"
         className="fixed bottom-6 right-6 p-4 rounded-full shadow-lg flex flex-col items-center justify-center h-auto w-auto bg-[#25D366] hover:bg-[#25D366]/90 text-white dark:text-white"
       >
-        <WhatsappIcon className="h-8 w-8 text-white" />
+        <WhatsappIcon className="h-8 w-8" />
         <span className="text-xs mt-1">Compre Aqui</span>
       </Button>
 
