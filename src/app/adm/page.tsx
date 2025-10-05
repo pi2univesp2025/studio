@@ -7,9 +7,32 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Trash2 } from 'lucide-react';
+import { ArrowUpDown, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+
+const initialCategories = [
+  'BLUSAS',
+  'VESTIDOS',
+  'CALÇAS',
+  'CALÇADOS',
+  'BOLSAS'
+];
 
 export default function AdmPage() {
+  const [categories, setCategories] = useState(initialCategories);
+
+  const moveCategory = (index: number, direction: 'up' | 'down') => {
+    const newCategories = [...categories];
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+
+    if (newIndex >= 0 && newIndex < newCategories.length) {
+      const temp = newCategories[index];
+      newCategories[index] = newCategories[newIndex];
+      newCategories[newIndex] = temp;
+      setCategories(newCategories);
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col items-center bg-background p-4 sm:p-8">
       <div className="w-full max-w-4xl">
@@ -37,30 +60,19 @@ export default function AdmPage() {
           <Card>
             <CardHeader>
               <CardTitle>Categorias</CardTitle>
-              <CardDescription>Adicione, remova ou edite as categorias dos produtos.</CardDescription>
+              <CardDescription>Adicione, remova ou edite e reordene as categorias dos produtos.</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4">
-                <div className="flex items-center gap-2">
-                  <Input defaultValue="BLUSAS" />
-                  <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
-                </div>
-                 <div className="flex items-center gap-2">
-                  <Input defaultValue="VESTIDOS" />
-                  <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
-                </div>
-                 <div className="flex items-center gap-2">
-                  <Input defaultValue="CALÇAS" />
-                  <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
-                </div>
-                 <div className="flex items-center gap-2">
-                  <Input defaultValue="CALÇADOS" />
-                  <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Input defaultValue="BOLSAS" />
-                  <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
-                </div>
+                {categories.map((category, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <Button variant="ghost" size="icon" className="cursor-move">
+                        <ArrowUpDown className="h-4 w-4" />
+                    </Button>
+                    <Input defaultValue={category} />
+                    <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
+                  </div>
+                ))}
               </div>
               <Button className="mt-4">Adicionar Nova Categoria</Button>
             </CardContent>
