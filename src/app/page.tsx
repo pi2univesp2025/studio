@@ -175,16 +175,22 @@ export default function Home() {
         </div>
       </header>
       <main className="flex-1 container mx-auto px-4 my-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {displayedProducts.map((product) => (
-            <ProductCard 
-              key={product.id} 
-              product={product}
-              isFavorite={favorites.includes(product.id)}
-              onToggleFavorite={() => toggleFavorite(product.id)}
-            />
-          ))}
-        </div>
+        {displayedProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {displayedProducts.map((product) => (
+              <ProductCard 
+                key={product.id} 
+                product={product}
+                isFavorite={favorites.includes(product.id)}
+                onToggleFavorite={() => toggleFavorite(product.id)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center text-muted-foreground">
+            <p>NENHUM ITEM ADICIONADO AOS FAVORITOS</p>
+          </div>
+        )}
       </main>
 
       <Button
