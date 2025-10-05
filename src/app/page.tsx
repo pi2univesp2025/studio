@@ -13,6 +13,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import {
   Heart,
   Package,
   Search,
@@ -233,7 +238,18 @@ export default function Home() {
             <Link href="/sobre" className="text-muted-foreground">SOBRE NÓS</Link>
           </Button>
           <Button variant="link" className="text-muted-foreground">AVALIAÇÕES</Button>
-          <Button variant="link" className="text-muted-foreground">RECURSOS</Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="link" className="text-muted-foreground">RECURSOS</Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-2">
+              <div className="flex flex-col gap-2">
+                <Button variant="link" className="text-muted-foreground p-0 h-auto justify-start text-sm">Políticas de venda</Button>
+                <Button variant="link" className="text-muted-foreground p-0 h-auto justify-start text-sm">Políticas de troca</Button>
+                <Button variant="link" className="text-muted-foreground p-0 h-auto justify-start text-sm">Políticas de privacidade</Button>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </footer>
     </div>
