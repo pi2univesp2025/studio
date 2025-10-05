@@ -103,41 +103,37 @@ export default function SobrePage() {
       </header>
       <main className="flex-1 container mx-auto px-4 my-8">
         <div className="prose dark:prose-invert max-w-none">
-          <h1>Sobre Nós</h1>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-            nonummy, nisl vitae tempus aliquet, Olor sit amet, consectetur
-            adipiscing elit. Sed nonummy, nisl vitae tempus aliquet,
-            ipsum dolor sit amet, consectetur adipiscing elit. Sed nonummy,
-            nisl vitae tempus aliquet, ipsum dolor sit amet, consectetur
-            adipiscing elit. Sed nonummy, nisl vitae tempus aliquet,
-            ipsum dolor sit amet, consectetur adipiscing elit. Sed nonummy,
-            nisl vitae tempus aliquet.
-          </p>
-          <p>
-            Praesentium, voluptatem, occaecati, quos, quod, quae,
-            explicabo, quibusdam, eaque, similique, sunt, in, culpa,
-            qui, officia, deserunt, mollit, anim, id, est, laborum.
-            Et, harumd, und, relinques, facilis, est, et, expedita,
-            distinctio. Nam, liber, te, conscient, to, factor, tum,
-            poen, legum, odio, quae, ad, eam, per, se,acula, ut,
-            falli, in, libidine, et, tam, stabilis, amicitiae, ac,
-            ludum, et, vita, et, moribus, et, in, vita, et, moribus,
-            et.
-          </p>
-          <p>
-            Neque, porro, quisquam, est, qui, dolorem, ipsum, quia,
-            dolor, sit, amet, consectetur, adipisci, velit, sed,
-            quia, non, numquam, eius, modi, tempora, incidunt, ut,
-            labore, et, dolore, magnam, aliquam, quaerat, voluptatem.
-            Ut, enim, ad, minima, veniam, quis, nostrum,
-            exercitationem, ullam, corporis, suscipit, laboriosam,
-            nisi, ut, aliquid, ex, ea, commodi, consequatur? Quis,
-            autem, vel, eum, iure, reprehenderit, qui, in, ea,
-            voluptate, velit, esse, quam, nihil, molestiae,
-            consequatur, vel, illum, qui, dolorem, eum, fugiat, quo,
-            voluptas, nulla, pariatur?
-          </p>
+            <h1>Sobre o Protótipo Bazar</h1>
+            <p>
+                Bem-vindo ao Protótipo Bazar, o seu destino para encontrar peças únicas e cheias de estilo!
+                Nascemos da paixão por moda sustentável e da vontade de criar uma comunidade que valoriza
+                a qualidade e a originalidade. Em nosso bazar, cada item tem uma história e está pronto para
+                começar um novo capítulo com você.
+            </p>
+            <p>
+                Nossa curadoria é feita com muito carinho, selecionando roupas, acessórios e objetos de decoração
+                que combinam charme, bom gosto e preços acessíveis. Acreditamos que é possível se vestir bem e
+                decorar sua casa de forma consciente e criativa.
+            </p>
+            
+            <h2>Informações de Contato</h2>
+            <p>
+                <strong>Endereço:</strong> Rua da Moda, 123 - Bairro Criativo, Cidade Exemplo - EX, CEP 12345-678
+            </p>
+            <p>
+                <strong>Telefone para contato:</strong> (11) 98765-4321
+            </p>
+            <p>
+                <strong>Email para contato:</strong> contato@prototipobazar.com.br
+            </p>
+
+            <h2>Dados da Empresa</h2>
+            <p>
+                <strong>Razão Social:</strong> Protótipo Bazar Ltda.
+            </p>
+            <p>
+                <strong>CNPJ:</strong> 12.345.678/0001-90
+            </p>
         </div>
       </main>
       <Button
