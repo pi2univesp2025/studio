@@ -245,7 +245,9 @@ export default function AdmPage() {
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="product-images-1">URLs das Imagens (separadas por vírgula ou quebra de linha)</Label>
-                        <Textarea id="product-images-1" defaultValue="https://picsum.photos/seed/tshirt1/400/500, https://picsum.photos/seed/tshirt2/400/500, https://picsum.photos/seed/tshirt3/400/500" />
+                        <Textarea id="product-images-1" defaultValue="https://picsum.photos/seed/tshirt1/400/500
+https://picsum.photos/seed/tshirt2/400/500
+https://picsum.photos/seed/tshirt3/400/500" />
                       </div>
                        <div className="grid gap-2">
                         <Label htmlFor="product-tags-1">Tags (separadas por vírgula)</Label>
@@ -279,7 +281,9 @@ export default function AdmPage() {
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="product-images-2">URLs das Imagens (separadas por vírgula ou quebra de linha)</Label>
-                        <Textarea id="product-images-2" defaultValue="https://picsum.photos/seed/jeans1/400/500, https://picsum.photos/seed/jeans2/400/500, https://picsum.photos/seed/jeans3/400/500" />
+                        <Textarea id="product-images-2" defaultValue="https://picsum.photos/seed/jeans1/400/500
+https://picsum.photos/seed/jeans2/400/500
+https://picsum.photos/seed/jeans3/400/500" />
                       </div>
                        <div className="grid gap-2">
                         <Label htmlFor="product-tags-2">Tags (separadas por vírgula)</Label>
@@ -416,6 +420,8 @@ export default function AdmPage() {
     </div>
   );
 }
+
+    
 
     
 
