@@ -20,6 +20,54 @@ const initialCategories = [
   'BOLSAS'
 ];
 
+// Funções de conversão de cor
+function hexToRgb(hex: string) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (!result) return null;
+  return {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16),
+  };
+}
+
+function rgbToHsl(r: number, g: number, b: number) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0, s, l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0; // achromatic
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+    h /= 6;
+  }
+
+  return {
+    h: Math.round(h * 360),
+    s: Math.round(s * 100),
+    l: Math.round(l * 100),
+  };
+}
+
+function hslToHex(h: number, s: number, l: number) {
+  l /= 100;
+  const a = s * Math.min(l, 1 - l) / 100;
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+
 export default function AdmPage() {
   const [categories, setCategories] = useState(initialCategories);
 
@@ -46,20 +94,67 @@ export default function AdmPage() {
 
   const getBackgroundColor = (value: string) => {
     if (colorFormat === 'hsl') {
-      return `hsl(${value})`;
+      return `hsl(${value.replace(/%/g, '')})`;
+    }
+    if(colorFormat === 'rgb'){
+      return `rgb(${value})`;
     }
     return value;
   }
 
-  const ColorPreviewInput = ({ label, id, value, onChange }: { label: string, id: string, value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
-    <div className="grid gap-2">
-      <Label htmlFor={id}>{label}</Label>
-      <div className="flex items-center gap-2">
-        <Input id={id} value={value} onChange={onChange} />
-        <div className="h-10 w-10 rounded-md border" style={{ backgroundColor: getBackgroundColor(value) }} />
-      </div>
-    </div>
-  );
+  const ColorPreviewInput = ({ label, id, value, onChange, onPickerChange }: { label: string, id: string, value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, onPickerChange: (hex: string) => void }) => {
+    const colorValueForPicker = () => {
+        try {
+            if (colorFormat === 'hsl') {
+                const [h, s, l] = value.split(' ').map(v => parseFloat(v));
+                return hslToHex(h,s,l);
+            }
+             if (colorFormat === 'rgb') {
+                const [r, g, b] = value.split(',').map(v => parseInt(v.trim()));
+                return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+            }
+            return value;
+        } catch(e) {
+            return '#000000'; // fallback
+        }
+    }
+    
+    return (
+        <div className="grid gap-2">
+        <Label htmlFor={id}>{label}</Label>
+        <div className="flex items-center gap-2">
+            <Input id={id} value={value} onChange={onChange} />
+            <div className="h-10 w-10 rounded-md border relative">
+                <div 
+                    className="h-full w-full"
+                    style={{ backgroundColor: getBackgroundColor(value) }}
+                />
+                <input
+                    type="color"
+                    className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                    value={colorValueForPicker()}
+                    onChange={(e) => onPickerChange(e.target.value)}
+                />
+            </div>
+        </div>
+        </div>
+    );
+  };
+
+  const handleColorPickerChange = (hex: string, setter: (value: string) => void) => {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return;
+
+    if(colorFormat === 'hsl') {
+        const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+        setter(`${hsl.h} ${hsl.s}% ${hsl.l}%`);
+    } else if (colorFormat === 'rgb') {
+        setter(`${rgb.r}, ${rgb.g}, ${rgb.b}`);
+    } else { // hex
+        setter(hex);
+    }
+  }
+
 
   return (
     <div className="flex min-h-screen flex-col items-center bg-background p-4 sm:p-8">
@@ -249,18 +344,21 @@ export default function AdmPage() {
                       id="color-primary-light"
                       value={lightPrimary}
                       onChange={(e) => setLightPrimary(e.target.value)}
+                      onPickerChange={(hex) => handleColorPickerChange(hex, setLightPrimary)}
                     />
                     <ColorPreviewInput
                       label="Cor do Fundo"
                       id="color-background-light"
                       value={lightBackground}
                       onChange={(e) => setLightBackground(e.target.value)}
+                      onPickerChange={(hex) => handleColorPickerChange(hex, setLightBackground)}
                     />
                      <ColorPreviewInput
                       label="Cor de Destaque"
                       id="color-accent-light"
                       value={lightAccent}
                       onChange={(e) => setLightAccent(e.target.value)}
+                      onPickerChange={(hex) => handleColorPickerChange(hex, setLightAccent)}
                     />
                   </div>
                 </TabsContent>
@@ -271,18 +369,21 @@ export default function AdmPage() {
                         id="color-primary-dark"
                         value={darkPrimary}
                         onChange={(e) => setDarkPrimary(e.target.value)}
+                        onPickerChange={(hex) => handleColorPickerChange(hex, setDarkPrimary)}
                       />
                       <ColorPreviewInput
                         label="Cor do Fundo"
                         id="color-background-dark"
                         value={darkBackground}
                         onChange={(e) => setDarkBackground(e.target.value)}
+                        onPickerChange={(hex) => handleColorPickerChange(hex, setDarkBackground)}
                       />
                       <ColorPreviewInput
                         label="Cor de Destaque"
                         id="color-accent-dark"
                         value={darkAccent}
                         onChange={(e) => setDarkAccent(e.target.value)}
+                        onPickerChange={(hex) => handleColorPickerChange(hex, setDarkAccent)}
                       />
                   </div>
                 </TabsContent>
@@ -298,3 +399,5 @@ export default function AdmPage() {
     </div>
   );
 }
+
+    
