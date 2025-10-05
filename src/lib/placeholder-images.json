@@ -1,34 +1,3 @@
 {
-  "placeholderImages": [
-    {
-      "id": "product-main",
-      "description": "A stylish modern watch on a wrist.",
-      "imageUrl": "https://images.unsplash.com/photo-1574714051445-90bdcd7fdb82?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzdHlsaXNoJTIwd2F0Y2h8ZW58MHx8fHwxNzU5NjA0OTI2fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "stylish watch"
-    },
-    {
-      "id": "thumb-1",
-      "description": "A close-up of the watch face.",
-      "imageUrl": "https://images.unsplash.com/photo-1543263207-914954b0141a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3YXRjaCUyMGZhY2V8ZW58MHx8fHwxNzU5NTUxMDc5fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "watch face"
-    },
-    {
-      "id": "thumb-2",
-      "description": "A view of the leather strap.",
-      "imageUrl": "https://images.unsplash.com/photo-1641387763502-1c9acee3bbfd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxsZWF0aGVyJTIwc3RyYXB8ZW58MHx8fHwxNzU5NjQ0MDY5fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "leather strap"
-    },
-    {
-      "id": "thumb-3",
-      "description": "The side view of the watch, showing the crown.",
-      "imageUrl": "https://images.unsplash.com/photo-1659461279780-708ad0dabfe4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3YXRjaCUyMGNyb3dufGVufDB8fHx8MTc1OTY0NDA2OXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "watch crown"
-    },
-    {
-      "id": "thumb-4",
-      "description": "The watch clasp and band.",
-      "imageUrl": "https://images.unsplash.com/photo-1688120242634-044d8241b9d8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx3YXRjaCUyMGNsYXNwfGVufDB8fHx8MTc1OTY0NDA2OXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "watch clasp"
-    }
-  ]
+  "placeholderImages": []
 }
