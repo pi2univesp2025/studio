@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ArrowUpDown, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const initialCategories = [
   'BLUSAS',
@@ -66,9 +67,14 @@ export default function AdmPage() {
               <div className="grid gap-4">
                 {categories.map((category, index) => (
                   <div key={index} className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" className="cursor-move">
-                        <ArrowUpDown className="h-4 w-4" />
-                    </Button>
+                    <div className="flex flex-col">
+                      <button onClick={() => moveCategory(index, 'up')} disabled={index === 0} className="p-1 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <ArrowUpDown className="h-3 w-3 transform -rotate-180" />
+                      </button>
+                      <button onClick={() => moveCategory(index, 'down')} disabled={index === categories.length - 1} className="p-1 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <ArrowUpDown className="h-3 w-3" />
+                      </button>
+                    </div>
                     <Input defaultValue={category} />
                     <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
                   </div>
@@ -188,21 +194,47 @@ export default function AdmPage() {
           <Card>
             <CardHeader>
               <CardTitle>Cores do Site</CardTitle>
-              <CardDescription>Personalize as cores do seu site. Use valores HSL (ex: 240 5.9% 10%).</CardDescription>
+              <CardDescription>Personalize as cores do seu site para os modos claro e escuro. Use valores HSL (ex: 240 5.9% 10%).</CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-6 sm:grid-cols-2">
-                <div className="grid gap-2">
-                  <Label htmlFor="color-primary">Cor Primária</Label>
-                  <Input id="color-primary" defaultValue="240 5.9% 10%" />
-                </div>
-                 <div className="grid gap-2">
-                  <Label htmlFor="color-background">Cor do Fundo</Label>
-                  <Input id="color-background" defaultValue="0 0% 100%" />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="color-accent">Cor de Destaque</Label>
-                  <Input id="color-accent" defaultValue="0 0% 96.1%" />
-                </div>
+            <CardContent>
+               <Tabs defaultValue="light">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="light">Modo Claro</TabsTrigger>
+                  <TabsTrigger value="dark">Modo Escuro</TabsTrigger>
+                </TabsList>
+                <TabsContent value="light" className="mt-6">
+                  <div className="grid gap-6 sm:grid-cols-2">
+                    <div className="grid gap-2">
+                      <Label htmlFor="color-primary-light">Cor Primária</Label>
+                      <Input id="color-primary-light" defaultValue="240 5.9% 10%" />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="color-background-light">Cor do Fundo</Label>
+                      <Input id="color-background-light" defaultValue="0 0% 100%" />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="color-accent-light">Cor de Destaque</Label>
+                      <Input id="color-accent-light" defaultValue="0 0% 96.1%" />
+                    </div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="dark" className="mt-6">
+                  <div className="grid gap-6 sm:grid-cols-2">
+                     <div className="grid gap-2">
+                      <Label htmlFor="color-primary-dark">Cor Primária</Label>
+                      <Input id="color-primary-dark" defaultValue="0 0% 98%" />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="color-background-dark">Cor do Fundo</Label>
+                      <Input id="color-background-dark" defaultValue="240 10% 3.9%" />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="color-accent-dark">Cor de Destaque</Label>
+                      <Input id="color-accent-dark" defaultValue="0 0% 14.9%" />
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
 
