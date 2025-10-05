@@ -140,13 +140,15 @@ export default function SobrePage() {
             </div>
         </div>
       </main>
-      <Button
-        variant="default"
-        className="fixed bottom-[90px] right-6 h-16 w-16 rounded-full shadow-lg flex flex-col items-center justify-center bg-[#25D366] hover:bg-[#25D366]/90 text-white dark:text-white"
-      >
-        <span className="text-xs mb-1">Compre Aqui</span>
-        <WhatsappIcon className="h-8 w-8" />
-      </Button>
+      <div className="fixed bottom-[90px] right-6 flex flex-col items-center z-50 gap-2">
+        <span className="bg-background text-foreground text-sm font-medium px-3 py-1.5 rounded-full shadow-lg">Compre Aqui</span>
+        <Button
+          variant="default"
+          className="h-16 w-16 rounded-full shadow-lg flex items-center justify-center bg-[#25D366] hover:bg-[#25D366]/90 text-white dark:text-white"
+        >
+          <WhatsappIcon className="h-8 w-8" />
+        </Button>
+      </div>
 
       <footer className="border-t py-6">
         <div className="container mx-auto px-4 flex justify-center items-center gap-6 text-sm">
