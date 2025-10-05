@@ -150,8 +150,7 @@ export default function Home() {
 
       <Button
         variant="default"
-        size="lg"
-        className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-lg flex flex-col items-center justify-center"
+        className="fixed bottom-6 right-6 p-4 rounded-full shadow-lg flex flex-col items-center justify-center h-auto w-auto"
         style={{backgroundColor: '#25D366', color: 'white'}}
       >
         <WhatsappIcon className="h-8 w-8 text-white" />
