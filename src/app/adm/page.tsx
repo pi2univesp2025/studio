@@ -173,7 +173,7 @@ export default function AdmPage() {
             <CardContent>
               <div className="grid gap-2">
                 <Label htmlFor="business_name">Nome do Site</Label>
-                <Input id="business_name" defaultValue="Protótipo Bazar" />
+                <Input id="business_name" defaultValue="Protótipo" />
               </div>
             </CardContent>
           </Card>
@@ -306,7 +306,7 @@ export default function AdmPage() {
             <CardContent>
               <div className="grid gap-2">
                 <Label htmlFor="about_me">Descrição</Label>
-                <Textarea id="about_me" rows={8} defaultValue="Bem-vindo ao Protótipo Bazar, o seu destino para encontrar peças únicas e cheias de estilo! Nascemos da paixão por moda sustentável e da vontade de criar uma comunidade que valoriza a qualidade e a originalidade." />
+                <Textarea id="about_me" rows={8} defaultValue="Bem-vindo ao Protótipo, o seu destino para encontrar peças únicas e cheias de estilo! Nascemos da paixão por moda sustentável e da vontade de criar uma comunidade que valoriza a qualidade e a originalidade." />
               </div>
             </CardContent>
           </Card>
@@ -416,6 +416,8 @@ export default function AdmPage() {
     </div>
   );
 }
+
+    
 
     
 

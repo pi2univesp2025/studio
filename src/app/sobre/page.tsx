@@ -34,7 +34,7 @@ export default function SobrePage() {
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             <a href="/" className="text-2xl font-bold">
-              Protótipo Bazar
+              Protótipo
             </a>
             {showMobileSearch ? (
                <div className="absolute top-0 left-0 w-full p-4 bg-background border-b z-50 md:hidden">
@@ -128,9 +128,9 @@ export default function SobrePage() {
       </header>
       <main className="flex-1 container mx-auto px-4 my-8">
         <div className="prose dark:prose-invert max-w-none">
-            <h1 className="mb-4">Sobre o Protótipo Bazar</h1>
+            <h1 className="mb-4">Sobre o Protótipo</h1>
             <p className="mb-6">
-                Bem-vindo ao Protótipo Bazar, o seu destino para encontrar peças únicas e cheias de estilo!
+                Bem-vindo ao Protótipo, o seu destino para encontrar peças únicas e cheias de estilo!
                 Nascemos da paixão por moda sustentável e da vontade de criar uma comunidade que valoriza
                 a qualidade e a originalidade. Em nosso bazar, cada item tem uma história e está pronto para
                 começar um novo capítulo com você.
@@ -150,14 +150,14 @@ export default function SobrePage() {
                     <strong>Telefone para contato:</strong> (11) 98765-4321
                 </p>
                 <p>
-                    <strong>Email para contato:</strong> contato@prototipobazar.com.br
+                    <strong>Email para contato:</strong> contato@prototipo.com.br
                 </p>
             </div>
 
             <h2 className="mt-12 mb-4">Dados da Empresa</h2>
             <div className="space-y-4">
                 <p>
-                    <strong>Razão Social:</strong> Protótipo Bazar Ltda.
+                    <strong>Razão Social:</strong> Protótipo Ltda.
                 </p>
                 <p>
                     <strong>CNPJ:</strong> 12.345.678/0001-90
@@ -199,3 +199,5 @@ export default function SobrePage() {
     </div>
   );
 }
+
+    

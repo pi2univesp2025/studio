@@ -147,7 +147,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             <a href="/" className="text-2xl font-bold">
-              Protótipo Bazar
+              Protótipo
             </a>
              {showMobileSearch ? (
               <div className="absolute top-0 left-0 w-full p-4 bg-background border-b z-50 md:hidden">
@@ -310,3 +310,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
