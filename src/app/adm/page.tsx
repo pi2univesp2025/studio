@@ -10,6 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { ArrowUpDown, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const initialCategories = [
   'BLUSAS',
@@ -29,6 +30,8 @@ export default function AdmPage() {
   const [darkBackground, setDarkBackground] = useState('240 10% 3.9%');
   const [darkAccent, setDarkAccent] = useState('0 0% 14.9%');
 
+  const [colorFormat, setColorFormat] = useState('hsl');
+
   const moveCategory = (index: number, direction: 'up' | 'down') => {
     const newCategories = [...categories];
     const newIndex = direction === 'up' ? index - 1 : index + 1;
@@ -41,12 +44,19 @@ export default function AdmPage() {
     }
   };
 
+  const getBackgroundColor = (value: string) => {
+    if (colorFormat === 'hsl') {
+      return `hsl(${value})`;
+    }
+    return value;
+  }
+
   const ColorPreviewInput = ({ label, id, value, onChange }: { label: string, id: string, value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
     <div className="grid gap-2">
       <Label htmlFor={id}>{label}</Label>
       <div className="flex items-center gap-2">
         <Input id={id} value={value} onChange={onChange} />
-        <div className="h-10 w-10 rounded-md border" style={{ backgroundColor: `hsl(${value})` }} />
+        <div className="h-10 w-10 rounded-md border" style={{ backgroundColor: getBackgroundColor(value) }} />
       </div>
     </div>
   );
@@ -214,6 +224,19 @@ export default function AdmPage() {
               <CardDescription>Personalize as cores do seu site para os modos claro e escuro. Use valores HSL (ex: 240 5.9% 10%).</CardDescription>
             </CardHeader>
             <CardContent>
+                <div className="mb-6 max-w-[200px]">
+                    <Label htmlFor="color-format" className="mb-2 block">Formato da Cor</Label>
+                    <Select value={colorFormat} onValueChange={setColorFormat}>
+                      <SelectTrigger id="color-format">
+                        <SelectValue placeholder="Selecione o formato" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="hsl">HSL</SelectItem>
+                        <SelectItem value="rgb">RGB</SelectItem>
+                        <SelectItem value="hex">HEX</SelectItem>
+                      </SelectContent>
+                    </Select>
+                </div>
                <Tabs defaultValue="light">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="light">Modo Claro</TabsTrigger>
