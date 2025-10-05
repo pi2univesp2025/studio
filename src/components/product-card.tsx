@@ -35,7 +35,7 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <Card className="overflow-hidden group">
+    <Card className="overflow-hidden group transition-transform duration-200 ease-in-out hover:scale-105">
       <CardContent className="p-0">
         <div className="aspect-[4/5] w-full relative">
           <Image
