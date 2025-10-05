@@ -420,11 +420,3 @@ https://picsum.photos/seed/jeans3/400/500" />
     </div>
   );
 }
-
-    
-
-    
-
-    
-
-    
