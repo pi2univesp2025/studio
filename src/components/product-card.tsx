@@ -121,6 +121,7 @@ export function ProductCard({ product, isFavorite, onToggleFavorite, isInCart, o
                 fill
                 className="object-cover rounded-md"
                 data-ai-hint={product.imageHint}
+                sizes="100vw"
               />
                {product.imageUrls.length > 1 && (
                 <>
