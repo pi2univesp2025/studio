@@ -114,13 +114,13 @@ export default function Home() {
                   variant="ghost"
                   className="text-sm font-medium flex items-center gap-1"
                 >
-                  MENU SUSPENSO <ChevronDown className="h-4 w-4" />
+                  OUTROS <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>Item 1</DropdownMenuItem>
-                <DropdownMenuItem>Item 2</DropdownMenuItem>
-                <DropdownMenuItem>Item 3</DropdownMenuItem>
+                <DropdownMenuItem>Acessórios</DropdownMenuItem>
+                <DropdownMenuItem>Bolsas</DropdownMenuItem>
+                <DropdownMenuItem>Decoração</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </nav>
