@@ -15,7 +15,7 @@ import {
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog';
-import { Heart, ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
+import { Heart, ChevronLeft, ChevronRight, ShoppingCart, Trash2 } from 'lucide-react';
 
 type Product = {
   id: number;
@@ -75,7 +75,7 @@ export function ProductCard({ product, isFavorite, onToggleFavorite, isInCart, o
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
                {isInCart && (
-                <div className="absolute top-2 right-2 bg-background/80 rounded-full p-1.5">
+                <div className="absolute top-2 right-2 bg-background/80 rounded-full p-1.5 shadow-md">
                   <ShoppingCart className="h-5 w-5 text-primary" />
                 </div>
               )}
@@ -149,8 +149,16 @@ export function ProductCard({ product, isFavorite, onToggleFavorite, isInCart, o
         <p>{product.description}</p>
         <DialogFooter>
           <DialogClose asChild>
-            <Button className="w-full" onClick={handleBuyClick}>
-              <ShoppingCart className="mr-2 h-4 w-4" /> COMPRAR
+            <Button className="w-full" onClick={handleBuyClick} variant={isInCart ? 'destructive' : 'default'}>
+              {isInCart ? (
+                <>
+                  <Trash2 className="mr-2 h-4 w-4" /> DESCARTAR
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="mr-2 h-4 w-4" /> COMPRAR
+                </>
+              )}
             </Button>
           </DialogClose>
         </DialogFooter>
