@@ -1,0 +1,119 @@
+{
+  "entities": {
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a product for sale in the Bazaar Showcase.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Product entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the product."
+        },
+        "price": {
+          "type": "number",
+          "description": "The price of the product."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the product."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the main product image.",
+          "format": "uri"
+        },
+        "thumbnailImageUrls": {
+          "type": "array",
+          "description": "URLs of thumbnail images for the product.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "price",
+        "description",
+        "imageUrl"
+      ]
+    },
+    "Theme": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Theme",
+      "type": "object",
+      "description": "Represents a theme setting to switch the UI between dark and light mode.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Theme entity."
+        },
+        "darkMode": {
+          "type": "boolean",
+          "description": "A boolean indicating whether dark mode is enabled."
+        },
+        "useSystemColorScheme": {
+          "type": "boolean",
+          "description": "Indicates whether to use the system's color scheme."
+        }
+      },
+      "required": [
+        "id",
+        "darkMode",
+        "useSystemColorScheme"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}/products/{productId}",
+        "definition": {
+          "entityName": "Product",
+          "schema": {
+            "$ref": "#/backend/entities/Product"
+          },
+          "description": "Stores product information for each user. Only the user with the corresponding userId has access to the products stored under their ID. This structure ensures ownership and prevents unauthorized access.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "productId",
+              "description": "The unique identifier of the product."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/theme",
+        "definition": {
+          "entityName": "Theme",
+          "schema": {
+            "$ref": "#/backend/entities/Theme"
+          },
+          "description": "Stores theme settings for each user.  Only the user with the corresponding userId has access to the theme stored under their ID. This ensures user-specific theme persistence.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "This Firestore structure prioritizes user-specific data isolation and straightforward security rules. The `users/{userId}/products/{productId}` path enforces strict ownership, as only the authenticated user (`userId`) can access products under their specific path. This aligns perfectly with the app's requirement of saving information related to a specific user. The `users/{userId}/theme` path stores user-specific theme settings. \n\nThis design achieves Authorization Independence because access control is path-based. There's no need for `get()` calls to parent documents to determine authorization. The structure implicitly supports QAPs (Rules Are Not Filters) since listing products under `users/{userId}/products` only returns products owned by that user, based on the path. \n\nHomogeneous security posture is maintained within each collection. All documents within `users/{userId}/products` share the same ownership-based access rules."
+  }
+}

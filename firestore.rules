@@ -1,0 +1,92 @@
+/**
+ * @file Firebase Security Rules for Bazaar Showcase.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model. Each user has exclusive
+ * access to their own data, which is nested under their unique user ID.
+ *
+ * Data Structure:
+ * - `/users/{userId}/products/{productId}`: Stores product information, accessible only
+ *   by the user identified by `userId`.
+ * - `/users/{userId}/theme`: Stores theme settings, accessible only by the user
+ *   identified by `userId`.
+ *
+ * Key Security Decisions:
+ * - Users can only access their own data. No cross-user data access is allowed.
+ * - Listing all users or products across all users is explicitly denied.
+ *
+ * Denormalization for Authorization:
+ *  - The data structure itself embeds the authorization: the user ID is part of the path.
+ *
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Checks if the current user is signed in.
+     * @return {boolean} True if the user is signed in, false otherwise.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the request is made by the owner of the resource.
+     * @param {string} userId The user ID to check against.
+     * @return {boolean} True if the user ID matches the authenticated user's ID, false otherwise.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * @description Checks if the request is made by the owner of the resource and the resource exists.
+     * @param {string} userId The user ID to check against.
+     * @return {boolean} True if the user ID matches the authenticated user's ID and resource exists, false otherwise.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Security rules for products under a specific user.
+     * @path /users/{userId}/products/{productId}
+     * @allow (create) User 'user123' creates a new product with a matching userId in the path.
+     * @allow (get,update,delete) User 'user123' updates product 'product456' with a matching userId in the path.
+     * @deny (create) User 'user456' attempts to create a product under user 'user123''s path.
+     * @deny (update,delete) User 'user456' attempts to update product 'product456' under user 'user123''s path.
+     * @principle Enforces document ownership for writes and restricts access to a user's own data tree.
+     */
+    match /users/{userId}/products/{productId} {
+      // Read rules
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+
+      // Write rules
+      allow create: if isOwner(userId) && request.resource.data.id == productId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Security rules for theme settings under a specific user.
+     * @path /users/{userId}/theme
+     * @allow (create) User 'user123' creates a theme with a matching userId in the path.
+     * @allow (get,update,delete) User 'user123' updates their own theme settings.
+     * @deny (create) User 'user456' attempts to create a theme under user 'user123''s path.
+     * @deny (update,delete) User 'user456' attempts to update theme settings under user 'user123''s path.
+     * @principle Enforces document ownership for writes and restricts access to a user's own data tree.
+     */
+    match /users/{userId}/theme {
+      // Read rules
+      allow get: if isOwner(userId);
+      allow list: if false;
+
+      // Write rules
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+    }
+  }
+}
