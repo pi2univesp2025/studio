@@ -7,16 +7,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { GripVertical, Trash2 } from 'lucide-react';
+import { GripVertical, LogOut, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { useAuth, useFirestore, useUser, useDoc, useCollection, useMemoFirebase } from '@/firebase';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { collection, doc } from 'firebase/firestore';
+import { collection, doc, signOut } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
+import { useRouter } from 'next/navigation';
 
 // Funções de conversão de cor
 function hexToRgb(hex: string) {
@@ -80,6 +81,7 @@ export default function AdmPage() {
   const auth = useAuth();
   const firestore = useFirestore();
   const { toast } = useToast();
+  const router = useRouter();
   const userId = user?.uid;
 
   // Firestore Refs
@@ -154,6 +156,22 @@ export default function AdmPage() {
     }
   }, [themeData]);
 
+  const handleLogout = async () => {
+    try {
+      await (auth as any).signOut(); // Using `signOut` from the auth instance
+      toast({
+        title: "Logout realizado",
+        description: "Você foi desconectado com sucesso.",
+      });
+      router.push('/login');
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erro no Logout",
+        description: "Não foi possível desconectar. Tente novamente.",
+      });
+    }
+  };
 
   const handleSaveChanges = () => {
     if (!user) {
@@ -315,9 +333,17 @@ export default function AdmPage() {
   return (
     <div className="flex min-h-screen flex-col items-center bg-background">
       <div className="flex-1 w-full max-w-4xl p-4 sm:p-8">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold">Painel de Administração</h1>
-          <p className="text-muted-foreground">Edite as informações do seu site aqui.</p>
+        <header className="mb-8 flex items-center justify-between">
+            <div>
+                <h1 className="text-3xl font-bold">Painel de Administração</h1>
+                <p className="text-muted-foreground">Edite as informações do seu site aqui.</p>
+            </div>
+            {user && !user.isAnonymous && (
+            <Button variant="outline" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Sair
+            </Button>
+          )}
         </header>
 
         <div className="grid gap-8">
@@ -557,3 +583,5 @@ export default function AdmPage() {
     </div>
   );
 }
+
+    
