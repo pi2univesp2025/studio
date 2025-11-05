@@ -158,7 +158,7 @@ export default function AdmPage() {
 
   const handleLogout = async () => {
     try {
-      await (auth as any).signOut(); // Using `signOut` from the auth instance
+      await signOut(auth); // Use signOut from 'firebase/auth'
       toast({
         title: "Logout realizado",
         description: "Você foi desconectado com sucesso.",
@@ -338,12 +338,6 @@ export default function AdmPage() {
                 <h1 className="text-3xl font-bold">Painel de Administração</h1>
                 <p className="text-muted-foreground">Edite as informações do seu site aqui.</p>
             </div>
-            {user && !user.isAnonymous && (
-            <Button variant="outline" onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Sair
-            </Button>
-          )}
         </header>
 
         <div className="grid gap-8">
@@ -576,12 +570,16 @@ export default function AdmPage() {
         </div>
       </div>
        <footer className="w-full border-t py-6 mt-8">
-        <div className="container mx-auto px-4 flex justify-center items-center">
+        <div className="container mx-auto px-4 flex justify-center items-center gap-4">
           <Button variant="link" className="text-muted-foreground">Preciso de ajuda</Button>
+          {user && !user.isAnonymous && (
+            <Button variant="outline" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Sair
+            </Button>
+          )}
         </div>
       </footer>
     </div>
   );
 }
-
-    
