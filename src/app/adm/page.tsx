@@ -8,11 +8,15 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { GripVertical, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import Link from 'next/link';
+import { useAuth, useFirestore, useUser } from '@/firebase';
+import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { doc } from 'firebase/firestore';
+import { useToast } from '@/hooks/use-toast';
+import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
 
 const initialCategories = [
   'BLUSAS',
@@ -71,7 +75,34 @@ function hslToHex(h: number, s: number, l: number) {
 
 
 export default function AdmPage() {
+  const { user, isUserLoading } = useUser();
+  const auth = useAuth();
+  const firestore = useFirestore();
+  const { toast } = useToast();
+
+  const [siteName, setSiteName] = useState('Protótipo');
+  const [aboutMe, setAboutMe] = useState("Bem-vindo ao Protótipo, o seu destino para encontrar peças únicas e cheias de estilo! Nascemos da paixão por moda sustentável e da vontade de criar uma comunidade que valoriza a qualidade e a originalidade.");
+
   const [categories, setCategories] = useState(initialCategories.map((cat, index) => ({ id: `cat-${index}`, content: cat })));
+  
+  const [products, setProducts] = useState([
+    { 
+      id: 'prod-1',
+      name: 'Blusa Estilosa', 
+      price: 'R$ 89,90',
+      discountPrice: '',
+      imageUrls: 'https://picsum.photos/seed/tshirt1/400/500\nhttps://picsum.photos/seed/tshirt2/400/500\nhttps://picsum.photos/seed/tshirt3/400/500',
+      tags: 'blusa, estilosa, feminina'
+    },
+    { 
+      id: 'prod-2',
+      name: 'Calça Jeans',
+      price: 'R$ 129,90',
+      discountPrice: '',
+      imageUrls: 'https://picsum.photos/seed/jeans1/400/500\nhttps://picsum.photos/seed/jeans2/400/500\nhttps://picsum.photos/seed/jeans3/400/500',
+      tags: 'calça, jeans, masculina'
+    },
+  ]);
 
   const [lightPrimary, setLightPrimary] = useState('240 5.9% 10%');
   const [lightBackground, setLightBackground] = useState('0 0% 100%');
@@ -82,14 +113,113 @@ export default function AdmPage() {
 
   const [colorFormat, setColorFormat] = useState('hsl');
 
+  // Sign in anonymously if not logged in
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      initiateAnonymousSignIn(auth);
+    }
+  }, [isUserLoading, user, auth]);
+
+  const handleSaveChanges = () => {
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Você precisa estar logado para salvar as alterações.",
+      });
+      return;
+    }
+
+    const db = firestore;
+    const userId = user.uid;
+
+    const siteConfigData = {
+      siteName,
+      aboutUs: aboutMe,
+    };
+    const siteConfigRef = doc(db, 'siteConfig', userId);
+    setDocumentNonBlocking(siteConfigRef, siteConfigData, { merge: true });
+
+    const categoriesData = {
+      items: categories.map(c => c.content)
+    }
+    const categoriesRef = doc(db, 'categories', userId);
+    setDocumentNonBlocking(categoriesRef, categoriesData, { merge: true });
+
+    products.forEach(product => {
+      const productRef = doc(db, 'users', userId, 'products', product.id);
+      const productData = {
+        id: product.id,
+        title: product.name,
+        price: parseFloat(product.price.replace('R$ ', '').replace(',', '.')),
+        description: '', // Placeholder
+        imageUrl: product.imageUrls.split(/[\n,]/)[0].trim(),
+        thumbnailImageUrls: product.imageUrls.split(/[\n,]/).map(url => url.trim()).filter(url => url),
+        tags: product.tags.split(',').map(t => t.trim()),
+      };
+      setDocumentNonBlocking(productRef, productData, { merge: true });
+    });
+    
+    const themeData = {
+      id: userId,
+      light: {
+        primary: lightPrimary,
+        background: lightBackground,
+        accent: lightAccent,
+      },
+      dark: {
+        primary: darkPrimary,
+        background: darkBackground,
+        accent: darkAccent,
+      }
+    };
+    const themeRef = doc(db, 'users', userId, 'theme', 'settings');
+    setDocumentNonBlocking(themeRef, themeData, { merge: true });
+
+
+    toast({
+      title: "Sucesso!",
+      description: "Suas alterações foram salvas.",
+    });
+  };
+
   const handleOnDragEnd = (result: any) => {
     if (!result.destination) return;
     const items = Array.from(categories);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
-
     setCategories(items);
   }
+  
+  const handleAddCategory = () => {
+    const newId = `cat-${categories.length + 1}`;
+    setCategories([...categories, { id: newId, content: 'Nova Categoria' }]);
+  };
+
+  const handleRemoveCategory = (id: string) => {
+    setCategories(categories.filter(cat => cat.id !== id));
+  };
+  
+  const handleAddProduct = () => {
+    const newId = `prod-${products.length + 1}`;
+    setProducts([...products, {
+      id: newId,
+      name: 'Novo Produto',
+      price: 'R$ 0,00',
+      discountPrice: '',
+      imageUrls: '',
+      tags: ''
+    }]);
+  };
+
+  const handleRemoveProduct = (id: string) => {
+    setProducts(products.filter(p => p.id !== id));
+  };
+  
+  const handleProductChange = (id: string, field: string, value: string) => {
+    setProducts(products.map(p => p.id === id ? { ...p, [field]: value } : p));
+  };
+
 
   const getBackgroundColor = (value: string) => {
     if (colorFormat === 'hsl') {
@@ -173,7 +303,7 @@ export default function AdmPage() {
             <CardContent>
               <div className="grid gap-2">
                 <Label htmlFor="business_name">Nome do Site</Label>
-                <Input id="business_name" defaultValue="Protótipo" />
+                <Input id="business_name" value={siteName} onChange={(e) => setSiteName(e.target.value)} />
               </div>
             </CardContent>
           </Card>
@@ -199,8 +329,12 @@ export default function AdmPage() {
                                 className={`flex items-center gap-2 p-2 rounded-md transition-shadow ${snapshot.isDragging ? 'shadow-lg bg-background' : 'shadow-none'}`}
                                 >
                                 <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
-                                <Input defaultValue={content} />
-                                <Button variant="destructive" size="icon">
+                                <Input value={content} onChange={(e) => {
+                                  const newCategories = [...categories];
+                                  newCategories[index].content = e.target.value;
+                                  setCategories(newCategories);
+                                }} />
+                                <Button variant="destructive" size="icon" onClick={() => handleRemoveCategory(id)}>
                                     <Trash2 className="h-4 w-4" />
                                 </Button>
                                 </div>
@@ -212,7 +346,7 @@ export default function AdmPage() {
                     )}
                     </Droppable>
                 </DragDropContext>
-                <Button className="mt-4">Adicionar Nova Categoria</Button>
+                <Button className="mt-4" onClick={handleAddCategory}>Adicionar Nova Categoria</Button>
             </CardContent>
           </Card>
 
@@ -224,80 +358,43 @@ export default function AdmPage() {
             </CardHeader>
             <CardContent>
               <Accordion type="single" collapsible className="w-full">
-                {/* Exemplo de Produto 1 */}
-                <AccordionItem value="item-1">
-                  <AccordionTrigger>Blusa Estilosa</AccordionTrigger>
-                  <AccordionContent>
-                    <div className="grid gap-4">
-                      <div className="grid gap-2">
-                        <Label htmlFor="product-name-1">Nome do Produto</Label>
-                        <Input id="product-name-1" defaultValue="Blusa Estilosa" />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
+                {products.map(product => (
+                  <AccordionItem value={product.id} key={product.id}>
+                    <AccordionTrigger>{product.name}</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="grid gap-4">
                         <div className="grid gap-2">
-                          <Label htmlFor="product-price-1">Preço</Label>
-                          <Input id="product-price-1" defaultValue="R$ 89,90" />
+                          <Label htmlFor={`product-name-${product.id}`}>Nome do Produto</Label>
+                          <Input id={`product-name-${product.id}`} value={product.name} onChange={(e) => handleProductChange(product.id, 'name', e.target.value)} />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="grid gap-2">
+                            <Label htmlFor={`product-price-${product.id}`}>Preço</Label>
+                            <Input id={`product-price-${product.id}`} value={product.price} onChange={(e) => handleProductChange(product.id, 'price', e.target.value)} />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor={`product-discount-price-${product.id}`}>Preço com Desconto (opcional)</Label>
+                            <Input id={`product-discount-price-${product.id}`} value={product.discountPrice} onChange={(e) => handleProductChange(product.id, 'discountPrice', e.target.value)} />
+                          </div>
                         </div>
                         <div className="grid gap-2">
-                          <Label htmlFor="product-discount-price-1">Preço com Desconto (opcional)</Label>
-                          <Input id="product-discount-price-1" />
+                          <Label htmlFor={`product-images-${product.id}`}>URLs das Imagens (separadas por vírgula ou quebra de linha)</Label>
+                          <Textarea id={`product-images-${product.id}`} value={product.imageUrls} onChange={(e) => handleProductChange(product.id, 'imageUrls', e.target.value)} />
                         </div>
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="product-images-1">URLs das Imagens (separadas por vírgula ou quebra de linha)</Label>
-                        <Textarea id="product-images-1" defaultValue="https://picsum.photos/seed/tshirt1/400/500
-https://picsum.photos/seed/tshirt2/400/500
-https://picsum.photos/seed/tshirt3/400/500" />
-                      </div>
-                       <div className="grid gap-2">
-                        <Label htmlFor="product-tags-1">Tags (separadas por vírgula)</Label>
-                        <Input id="product-tags-1" defaultValue="blusa, estilosa, feminina" />
-                      </div>
-                      <Button variant="destructive" size="sm" className="w-fit">
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Remover Produto
-                      </Button>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-                {/* Exemplo de Produto 2 */}
-                <AccordionItem value="item-2">
-                  <AccordionTrigger>Calça Jeans</AccordionTrigger>
-                  <AccordionContent>
-                     <div className="grid gap-4">
-                      <div className="grid gap-2">
-                        <Label htmlFor="product-name-2">Nome do Produto</Label>
-                        <Input id="product-name-2" defaultValue="Calça Jeans" />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="grid gap-2">
-                          <Label htmlFor="product-price-2">Preço</Label>
-                          <Input id="product-price-2" defaultValue="R$ 129,90" />
+                         <div className="grid gap-2">
+                          <Label htmlFor={`product-tags-${product.id}`}>Tags (separadas por vírgula)</Label>
+                          <Input id={`product-tags-${product.id}`} value={product.tags} onChange={(e) => handleProductChange(product.id, 'tags', e.target.value)} />
                         </div>
-                        <div className="grid gap-2">
-                          <Label htmlFor="product-discount-price-2">Preço com Desconto (opcional)</Label>
-                          <Input id="product-discount-price-2" />
-                        </div>
+                        <Button variant="destructive" size="sm" className="w-fit" onClick={() => handleRemoveProduct(product.id)}>
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Remover Produto
+                        </Button>
                       </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="product-images-2">URLs das Imagens (separadas por vírgula ou quebra de linha)</Label>
-                        <Textarea id="product-images-2" defaultValue="https://picsum.photos/seed/jeans1/400/500
-https://picsum.photos/seed/jeans2/400/500
-https://picsum.photos/seed/jeans3/400/500" />
-                      </div>
-                       <div className="grid gap-2">
-                        <Label htmlFor="product-tags-2">Tags (separadas por vírgula)</Label>
-                        <Input id="product-tags-2" defaultValue="calça, jeans, masculina" />
-                      </div>
-                       <Button variant="destructive" size="sm" className="w-fit">
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Remover Produto
-                      </Button>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
               </Accordion>
-               <Button className="mt-4">Adicionar Novo Produto</Button>
+               <Button className="mt-4" onClick={handleAddProduct}>Adicionar Novo Produto</Button>
             </CardContent>
           </Card>
 
@@ -310,7 +407,7 @@ https://picsum.photos/seed/jeans3/400/500" />
             <CardContent>
               <div className="grid gap-2">
                 <Label htmlFor="about_me">Descrição</Label>
-                <Textarea id="about_me" rows={8} defaultValue="Bem-vindo ao Protótipo, o seu destino para encontrar peças únicas e cheias de estilo! Nascemos da paixão por moda sustentável e da vontade de criar uma comunidade que valoriza a qualidade e a originalidade." />
+                <Textarea id="about_me" rows={8} value={aboutMe} onChange={(e) => setAboutMe(e.target.value)} />
               </div>
             </CardContent>
           </Card>
@@ -408,7 +505,7 @@ https://picsum.photos/seed/jeans3/400/500" />
           </Card>
 
           <div className="flex justify-end">
-            <Button size="lg">Salvar Alterações</Button>
+            <Button size="lg" onClick={handleSaveChanges}>Salvar Alterações</Button>
           </div>
         </div>
       </div>
