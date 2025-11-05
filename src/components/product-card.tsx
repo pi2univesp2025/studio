@@ -18,9 +18,10 @@ import {
 import { Heart, ChevronLeft, ChevronRight, ShoppingCart, Trash2 } from 'lucide-react';
 
 type Product = {
-  id: number;
+  id: string; // Changed to string to match Firestore ID
   name: string;
   price: string;
+  discountPrice?: string;
   imageUrls: string[];
   imageHint: string;
   description: string;
@@ -83,7 +84,10 @@ function ProductDialogContent({ product, isInCart, onToggleInCart }: { product: 
               )}
           </div>
           <DialogTitle>{product.name}</DialogTitle>
-          <DialogDescription className="text-lg">{product.price}</DialogDescription>
+          <DialogDescription className="text-lg flex items-baseline gap-2">
+            <span>{product.discountPrice || product.price}</span>
+            {product.discountPrice && <span className="text-sm text-muted-foreground line-through">{product.price}</span>}
+          </DialogDescription>
         </DialogHeader>
         <p>{product.description}</p>
         <DialogFooter>
@@ -142,7 +146,10 @@ export function ProductCard({ product, isFavorite, onToggleFavorite, isInCart, o
           <div className="p-4 bg-background flex items-start justify-between">
             <div>
               <h3 className="font-semibold text-lg">{product.name}</h3>
-              <p className="text-muted-foreground">{product.price}</p>
+              <div className="flex items-baseline gap-2 text-muted-foreground">
+                <span>{product.discountPrice || product.price}</span>
+                {product.discountPrice && <span className="text-xs line-through">{product.price}</span>}
+              </div>
             </div>
             <Button variant="ghost" size="icon" onClick={handleToggleFavorite}>
               <Heart className={`h-6 w-6 ${isFavorite ? 'text-red-500 fill-current' : ''}`} />
@@ -154,3 +161,5 @@ export function ProductCard({ product, isFavorite, onToggleFavorite, isInCart, o
     </Dialog>
   );
 }
+
+    

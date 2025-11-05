@@ -2,7 +2,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,75 +26,54 @@ import {
   Menu,
   ShoppingCart,
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 import { WhatsappIcon } from '@/components/ui/whatsapp-icon';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ProductCard } from '@/components/product-card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useUser, useFirestore, useCollection, useDoc, useMemoFirebase } from '@/firebase';
+import { collection, doc } from 'firebase/firestore';
 
-const products = [
-  {
-    id: 1,
-    name: 'Blusa Estilosa',
-    price: 'R$ 89,90',
-    category: 'BLUSAS',
-    imageUrls: [
-      'https://picsum.photos/seed/tshirt1/400/500',
-      'https://picsum.photos/seed/tshirt2/400/500',
-      'https://picsum.photos/seed/tshirt3/400/500',
-    ],
-    imageHint: 'stylish blouse',
-    description: 'Uma blusa estilosa para todas as ocasiões. Feita com tecido de alta qualidade para garantir conforto e durabilidade.'
-  },
-  {
-    id: 2,
-    name: 'Calça Jeans',
-    price: 'R$ 129,90',
-    category: 'CALÇAS',
-    imageUrls: [
-      'https://picsum.photos/seed/jeans1/400/500',
-      'https://picsum.photos/seed/jeans2/400/500',
-      'https://picsum.photos/seed/jeans3/400/500',
-    ],
-    imageHint: 'denim pants',
-    description: 'Calça jeans com corte moderno e caimento perfeito. Ideal para compor looks casuais e despojados.'
-  },
-  {
-    id: 3,
-    name: 'Vestido Floral',
-    price: 'R$ 159,90',
-    category: 'VESTIDOS',
-    imageUrls: [
-      'https://picsum.photos/seed/dress1/400/500',
-      'https://picsum.photos/seed/dress2/400/500',
-      'https://picsum.photos/seed/dress3/400/500',
-    ],
-    imageHint: 'floral dress',
-    description: 'Vestido floral leve e romântico. Perfeito para passeios ao ar livre e eventos durante o dia.'
-  },
-  {
-    id: 4,
-    name: 'Bolsa de Couro',
-    price: 'R$ 199,90',
-    category: 'BOLSAS',
-    imageUrls: [
-        'https://picsum.photos/seed/bag1/400/500',
-        'https://picsum.photos/seed/bag2/400/500',
-        'https://picsum.photos/seed/bag3/400/500',
-    ],
-    imageHint: 'leather bag',
-    description: 'Bolsa de couro legítimo com design elegante e espaçosa. Um acessório indispensável para o dia a dia.'
-  }
-];
-
+// Define product type matching Firestore data model
+type Product = {
+  id: string;
+  title: string;
+  price: number;
+  discountPrice?: number;
+  imageUrl: string;
+  thumbnailImageUrls: string[];
+  description: string;
+  tags: string[];
+};
 
 export default function Home() {
-  const [favorites, setFavorites] = useState<number[]>([]);
-  const [shoppingCart, setShoppingCart] = useState<number[]>([]);
+  const { user } = useUser();
+  const firestore = useFirestore();
+
+  // State
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [shoppingCart, setShoppingCart] = useState<string[]>([]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showCartOnly, setShowCartOnly] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('TODOS');
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  
+  const userId = user?.uid;
+
+  // Memoize Firestore references
+  const siteConfigRef = useMemoFirebase(() => userId ? doc(firestore, 'siteConfig', userId) : null, [firestore, userId]);
+  const categoriesRef = useMemoFirebase(() => userId ? doc(firestore, 'categories', userId) : null, [firestore, userId]);
+  const productsQuery = useMemoFirebase(() => userId ? collection(firestore, 'users', userId, 'products') : null, [firestore, userId]);
+
+  // Fetch data from Firestore
+  const { data: siteConfig, isLoading: isSiteConfigLoading } = useDoc(siteConfigRef);
+  const { data: categoriesData, isLoading: areCategoriesLoading } = useDoc(categoriesRef);
+  const { data: products, isLoading: areProductsLoading } = useCollection<Product>(productsQuery);
+
+  const siteName = siteConfig?.siteName || 'Protótipo';
+  const categories = categoriesData?.items || ['BLUSAS', 'VESTIDOS', 'CALÇAS', 'CALÇADOS'];
+  const allCategories = ['TODOS', ...categories];
+  const otherCategories = ['ACESSORIOS', 'BOLSAS', 'DECORACAO', 'MOVEIS', 'BRINQUEDOS'];
+
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
@@ -102,7 +81,7 @@ export default function Home() {
     setShowCartOnly(false);
   };
 
-  const toggleFavorite = (productId: number) => {
+  const toggleFavorite = (productId: string) => {
     setFavorites((prevFavorites) =>
       prevFavorites.includes(productId)
         ? prevFavorites.filter((id) => id !== productId)
@@ -110,7 +89,7 @@ export default function Home() {
     );
   };
   
-  const toggleInCart = (productId: number) => {
+  const toggleInCart = (productId: string) => {
     setShoppingCart((prevCart) =>
       prevCart.includes(productId)
         ? prevCart.filter((id) => id !== productId)
@@ -130,21 +109,35 @@ export default function Home() {
     setSelectedCategory('TODOS');
   };
 
-  const categoryFilteredProducts = selectedCategory === 'TODOS'
-    ? products
-    : products.filter(p => p.category === selectedCategory);
+  const categoryFilteredProducts = useMemo(() => {
+    if (!products) return [];
+    if (selectedCategory === 'TODOS') return products;
+    // This is a simple tag-based filtering. A more robust implementation might use a dedicated 'category' field.
+    return products.filter(p => p.tags && p.tags.some(tag => tag.toUpperCase() === selectedCategory.toUpperCase()));
+  }, [products, selectedCategory]);
   
   let displayedProducts;
   if (showFavoritesOnly) {
-    displayedProducts = products.filter((p) => favorites.includes(p.id));
+    displayedProducts = products?.filter((p) => favorites.includes(p.id)) || [];
   } else if (showCartOnly) {
-    displayedProducts = products.filter((p) => shoppingCart.includes(p.id));
+    displayedProducts = products?.filter((p) => shoppingCart.includes(p.id)) || [];
   } else {
     displayedProducts = categoryFilteredProducts;
   }
-
-  const categories = ['TODOS', 'BLUSAS', 'VESTIDOS', 'CALÇAS', 'CALÇADOS'];
-  const otherCategories = ['ACESSORIOS', 'BOLSAS', 'DECORACAO', 'MOVEIS', 'BRINQUEDOS'];
+  
+  // Convert Product type to what ProductCard expects
+  const cardProducts = useMemo(() => {
+    return displayedProducts.map(p => ({
+      id: p.id,
+      name: p.title,
+      price: `R$ ${p.price.toFixed(2).replace('.', ',')}`,
+      discountPrice: p.discountPrice ? `R$ ${p.discountPrice.toFixed(2).replace('.', ',')}`: undefined,
+      imageUrls: [p.imageUrl, ...p.thumbnailImageUrls].filter(Boolean),
+      imageHint: p.tags?.join(' ') || '',
+      description: p.description,
+      category: p.tags?.[0] || 'N/A' // Use first tag as category for simplicity
+    }));
+  }, [displayedProducts]);
 
 
   return (
@@ -153,7 +146,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             <a href="/" className="text-2xl font-bold">
-              Protótipo
+              {isSiteConfigLoading ? 'Carregando...' : siteName}
             </a>
              {showMobileSearch ? (
               <div className="absolute top-0 left-0 w-full p-4 bg-background border-b z-50 md:hidden">
@@ -205,11 +198,13 @@ export default function Home() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => handleCategoryClick('TODOS')}>TODOS</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleCategoryClick('BLUSAS')}>BLUSAS</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleCategoryClick('VESTIDOS')}>VESTIDOS</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleCategoryClick('CALÇAS')}>CALÇAS</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleCategoryClick('CALÇADOS')}>CALÇADOS</DropdownMenuItem>
+                   {areCategoriesLoading ? (
+                     <DropdownMenuItem>Carregando...</DropdownMenuItem>
+                   ) : (
+                    allCategories.map(cat => (
+                      <DropdownMenuItem key={cat} onClick={() => handleCategoryClick(cat)}>{cat}</DropdownMenuItem>
+                    ))
+                   )}
                   <DropdownMenuSeparator />
                   {otherCategories.map(cat => (
                     <DropdownMenuItem key={cat} onClick={() => handleCategoryClick(cat)}>{cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase()}</DropdownMenuItem>
@@ -226,11 +221,15 @@ export default function Home() {
             </div>
           </div>
           <nav className="hidden md:flex h-12 items-center justify-center gap-6">
-            {categories.map(cat => (
-              <Button key={cat} variant={selectedCategory === cat && !showFavoritesOnly && !showCartOnly ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick(cat)}>
-                {cat}
-              </Button>
-            ))}
+            {areCategoriesLoading ? (
+              <p className="text-sm text-muted-foreground">Carregando categorias...</p>
+            ) : (
+              allCategories.map(cat => (
+                <Button key={cat} variant={selectedCategory === cat && !showFavoritesOnly && !showCartOnly ? "secondary" : "ghost"} className="text-sm font-medium" onClick={() => handleCategoryClick(cat)}>
+                  {cat}
+                </Button>
+              ))
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -261,9 +260,13 @@ export default function Home() {
                 </Button>
             )}
         </div>
-        {displayedProducts.length > 0 ? (
+        {areProductsLoading ? (
+           <div className="flex-1 flex items-center justify-center text-center text-muted-foreground py-16">
+            <p>Carregando produtos...</p>
+          </div>
+        ) : cardProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {displayedProducts.map((product) => (
+            {cardProducts.map((product) => (
               <ProductCard 
                 key={product.id} 
                 product={product}
@@ -323,3 +326,5 @@ export default function Home() {
     </div>
   );
 }
+
+    

@@ -24,13 +24,25 @@ import {
 import { ThemeToggle } from '@/components/theme-toggle';
 import Link from 'next/link';
 import { WhatsappIcon } from '@/components/ui/whatsapp-icon';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
 
 
 export default function SobrePage() {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   
+  const { user } = useUser();
+  const firestore = useFirestore();
+  const userId = user?.uid;
+
+  const siteConfigRef = useMemoFirebase(() => userId ? doc(firestore, 'siteConfig', userId) : null, [firestore, userId]);
+  const { data: siteConfig, isLoading: isSiteConfigLoading } = useDoc(siteConfigRef);
+
+  const siteName = siteConfig?.siteName || 'Protótipo';
+  const aboutUsText = siteConfig?.aboutUs || "Bem-vindo ao Protótipo, o seu destino para encontrar peças únicas e cheias de estilo! Nascemos da paixão por moda sustentável e da vontade de criar uma comunidade que valoriza a qualidade e a originalidade.";
+
   const categories = ['TODOS', 'BLUSAS', 'VESTIDOS', 'CALÇAS', 'CALÇADOS'];
   const otherCategories = ['ACESSORIOS', 'BOLSAS', 'DECORACAO', 'MOVEIS', 'BRINQUEDOS'];
 
@@ -40,7 +52,7 @@ export default function SobrePage() {
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             <a href="/" className="text-2xl font-bold">
-              Protótipo
+               {isSiteConfigLoading ? 'Carregando...' : siteName}
             </a>
             {showMobileSearch ? (
                <div className="absolute top-0 left-0 w-full p-4 bg-background border-b z-50 md:hidden">
@@ -134,18 +146,16 @@ export default function SobrePage() {
       </header>
       <main className="flex-1 container mx-auto px-4 my-8">
         <div className="prose dark:prose-invert max-w-none">
-            <h1 className="mb-4">Sobre o Protótipo</h1>
-            <p className="mb-6">
-                Bem-vindo ao Protótipo, o seu destino para encontrar peças únicas e cheias de estilo!
-                Nascemos da paixão por moda sustentável e da vontade de criar uma comunidade que valoriza
-                a qualidade e a originalidade. Em nosso bazar, cada item tem uma história e está pronto para
-                começar um novo capítulo com você.
-            </p>
-            <p className="mb-8">
-                Nossa curadoria é feita com muito carinho, selecionando roupas, acessórios e objetos de decoração
-                que combinam charme, bom gosto e preços acessíveis. Acreditamos que é possível se vestir bem e
-                decorar sua casa de forma consciente e criativa.
-            </p>
+            <h1 className="mb-4">Sobre o {isSiteConfigLoading ? '...' : siteName}</h1>
+            {isSiteConfigLoading ? (
+                <>
+                    <p className="mb-6 animate-pulse bg-muted h-6 w-3/4 rounded-md"></p>
+                    <p className="mb-8 animate-pulse bg-muted h-6 w-full rounded-md"></p>
+                    <p className="mb-6 animate-pulse bg-muted h-6 w-1/2 rounded-md"></p>
+                </>
+            ) : (
+                 <p className="mb-6 whitespace-pre-wrap">{aboutUsText}</p>
+            )}
             
             <h2 className="mt-12 mb-4">Informações de Contato</h2>
             <div className="space-y-4">
@@ -207,9 +217,10 @@ export default function SobrePage() {
               </div>
             </PopoverContent>
           </Popover>
-          <Button variant="link" className="text-muted-foreground">Preciso de ajuda</Button>
         </div>
       </footer>
     </div>
   );
 }
+
+    
