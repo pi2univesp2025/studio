@@ -78,15 +78,19 @@ service cloud.firestore {
      * @deny (update,delete) User 'user456' attempts to update theme settings under user 'user123''s path.
      * @principle Enforces document ownership for writes and restricts access to a user's own data tree.
      */
-    match /users/{userId}/theme {
+    match /users/{userId}/theme/{docId} {
       // Read rules
       allow get: if isOwner(userId);
       allow list: if false;
 
       // Write rules
-      allow create: if isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow create: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
       allow delete: if isExistingOwner(userId);
+    }
+    
+    match /siteConfig/{userId} {
+      allow read, write: if isOwner(userId);
     }
   }
 }

@@ -67,6 +67,26 @@
         "darkMode",
         "useSystemColorScheme"
       ]
+    },
+    "SiteConfig": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "SiteConfig",
+      "type": "object",
+      "description": "Stores site-wide configuration settings for a user.",
+      "properties": {
+        "siteName": {
+          "type": "string",
+          "description": "The name of the site."
+        },
+        "aboutUs": {
+          "type": "string",
+          "description": "The content for the 'About Us' page."
+        }
+      },
+      "required": [
+        "siteName",
+        "aboutUs"
+      ]
     }
   },
   "auth": {
@@ -112,8 +132,24 @@
             }
           ]
         }
+      },
+      {
+        "path": "/siteConfig/{userId}",
+        "definition": {
+          "entityName": "SiteConfig",
+          "schema": {
+            "$ref": "#/backend/entities/SiteConfig"
+          },
+          "description": "Stores site-wide configuration for each user. Only the user with the corresponding userId can access their site configuration.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
       }
     ],
-    "reasoning": "This Firestore structure prioritizes user-specific data isolation and straightforward security rules. The `users/{userId}/products/{productId}` path enforces strict ownership, as only the authenticated user (`userId`) can access products under their specific path. This aligns perfectly with the app's requirement of saving information related to a specific user. The `users/{userId}/theme` path stores user-specific theme settings. \n\nThis design achieves Authorization Independence because access control is path-based. There's no need for `get()` calls to parent documents to determine authorization. The structure implicitly supports QAPs (Rules Are Not Filters) since listing products under `users/{userId}/products` only returns products owned by that user, based on the path. \n\nHomogeneous security posture is maintained within each collection. All documents within `users/{userId}/products` share the same ownership-based access rules."
+    "reasoning": "This Firestore structure prioritizes user-specific data isolation and straightforward security rules. The `users/{userId}/products/{productId}` path enforces strict ownership, as only the authenticated user (`userId`) can access products under their specific path. This aligns perfectly with the app's requirement of saving information related to a specific user. The `users/{userId}/theme` path stores user-specific theme settings. The `/siteConfig/{userId}` path stores site-wide configurations on a per-user basis. \n\nThis design achieves Authorization Independence because access control is path-based. There's no need for `get()` calls to parent documents to determine authorization. The structure implicitly supports QAPs (Rules Are Not Filters) since listing products under `users/{userId}/products` only returns products owned by that user, based on the path. \n\nHomogeneous security posture is maintained within each collection. All documents within `users/{userId}/products` and other user-specific collections share the same ownership-based access rules."
   }
 }
