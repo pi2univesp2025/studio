@@ -91,6 +91,7 @@ export default function AdmPage() {
       name: 'Blusa Estilosa', 
       price: 'R$ 89,90',
       discountPrice: '',
+      category: 'BLUSAS',
       imageUrls: 'https://picsum.photos/seed/tshirt1/400/500\nhttps://picsum.photos/seed/tshirt2/400/500\nhttps://picsum.photos/seed/tshirt3/400/500',
       tags: 'blusa, estilosa, feminina'
     },
@@ -99,6 +100,7 @@ export default function AdmPage() {
       name: 'Calça Jeans',
       price: 'R$ 129,90',
       discountPrice: '',
+      category: 'CALÇAS',
       imageUrls: 'https://picsum.photos/seed/jeans1/400/500\nhttps://picsum.photos/seed/jeans2/400/500\nhttps://picsum.photos/seed/jeans3/400/500',
       tags: 'calça, jeans, masculina'
     },
@@ -152,6 +154,7 @@ export default function AdmPage() {
         id: product.id,
         title: product.name,
         price: parseFloat(product.price.replace('R$ ', '').replace(',', '.')),
+        category: product.category,
         description: '', // Placeholder
         imageUrl: product.imageUrls.split(/[\n,]/)[0].trim(),
         thumbnailImageUrls: product.imageUrls.split(/[\n,]/).map(url => url.trim()).filter(url => url),
@@ -207,6 +210,7 @@ export default function AdmPage() {
       name: 'Novo Produto',
       price: 'R$ 0,00',
       discountPrice: '',
+      category: categories.length > 0 ? categories[0].content : '',
       imageUrls: '',
       tags: ''
     }]);
@@ -368,17 +372,30 @@ export default function AdmPage() {
                           <Input id={`product-name-${product.id}`} value={product.name} onChange={(e) => handleProductChange(product.id, 'name', e.target.value)} />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
-                          <div className="grid gap-2">
-                            <Label htmlFor={`product-price-${product.id}`}>Preço</Label>
-                            <Input id={`product-price-${product.id}`} value={product.price} onChange={(e) => handleProductChange(product.id, 'price', e.target.value)} />
-                          </div>
-                          <div className="grid gap-2">
-                            <Label htmlFor={`product-discount-price-${product.id}`}>Preço com Desconto (opcional)</Label>
-                            <Input id={`product-discount-price-${product.id}`} value={product.discountPrice} onChange={(e) => handleProductChange(product.id, 'discountPrice', e.target.value)} />
-                          </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor={`product-category-${product.id}`}>Categoria</Label>
+                                <Select value={product.category} onValueChange={(value) => handleProductChange(product.id, 'category', value)}>
+                                <SelectTrigger id={`product-category-${product.id}`}>
+                                    <SelectValue placeholder="Selecione a categoria" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {categories.map(cat => (
+                                        <SelectItem key={cat.id} value={cat.content}>{cat.content}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor={`product-price-${product.id}`}>Preço</Label>
+                                <Input id={`product-price-${product.id}`} value={product.price} onChange={(e) => handleProductChange(product.id, 'price', e.target.value)} />
+                            </div>
                         </div>
                         <div className="grid gap-2">
-                          <Label htmlFor={`product-images-${product.id}`}>URLs das Imagens (separadas por vírgula ou quebra de linha)</Label>
+                          <Label htmlFor={`product-discount-price-${product.id}`}>Preço com Desconto (opcional)</Label>
+                          <Input id={`product-discount-price-${product.id}`} value={product.discountPrice} onChange={(e) => handleProductChange(product.id, 'discountPrice', e.target.value)} />
+                        </div>
+                        <div className="grid gap-2">
+                          <Label htmlFor={`product-images-${product.id}`}>URLs das Imagens (separadas por quebra de linha)</Label>
                           <Textarea id={`product-images-${product.id}`} value={product.imageUrls} onChange={(e) => handleProductChange(product.id, 'imageUrls', e.target.value)} />
                         </div>
                          <div className="grid gap-2">

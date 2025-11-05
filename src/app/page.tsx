@@ -43,6 +43,7 @@ type Product = {
   thumbnailImageUrls: string[];
   description: string;
   tags: string[];
+  category: string;
 };
 
 export default function Home() {
@@ -112,8 +113,7 @@ export default function Home() {
   const categoryFilteredProducts = useMemo(() => {
     if (!products) return [];
     if (selectedCategory === 'TODOS') return products;
-    // This is a simple tag-based filtering. A more robust implementation might use a dedicated 'category' field.
-    return products.filter(p => p.tags && p.tags.some(tag => tag.toUpperCase() === selectedCategory.toUpperCase()));
+    return products.filter(p => p.category?.toUpperCase() === selectedCategory.toUpperCase());
   }, [products, selectedCategory]);
   
   let displayedProducts;
@@ -135,7 +135,7 @@ export default function Home() {
       imageUrls: [p.imageUrl, ...p.thumbnailImageUrls].filter(Boolean),
       imageHint: p.tags?.join(' ') || '',
       description: p.description,
-      category: p.tags?.[0] || 'N/A' // Use first tag as category for simplicity
+      category: p.category || 'N/A'
     }));
   }, [displayedProducts]);
 
