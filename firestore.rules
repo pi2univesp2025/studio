@@ -92,5 +92,9 @@ service cloud.firestore {
     match /siteConfig/{userId} {
       allow read, write: if isOwner(userId);
     }
+
+    match /categories/{userId} {
+      allow read, write: if isOwner(userId);
+    }
   }
 }
