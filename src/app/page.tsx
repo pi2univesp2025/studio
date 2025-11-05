@@ -249,7 +249,7 @@ export default function Home() {
         </div>
       </header>
       <main className="flex-1 container mx-auto px-4 my-8">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">
                 {showCartOnly ? "Seu Carrinho" : (showFavoritesOnly ? "Seus Favoritos" : "Todos os Produtos")}
             </h2>
@@ -265,7 +265,7 @@ export default function Home() {
             <p>Carregando produtos...</p>
           </div>
         ) : cardProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
             {cardProducts.map((product) => (
               <ProductCard 
                 key={product.id} 
