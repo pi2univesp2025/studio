@@ -58,7 +58,7 @@ function ProductDialogContent({ product, isInCart, onToggleInCart }: { product: 
                 src={product.imageUrls[currentImageIndex]}
                 alt={product.name}
                 fill
-                className="object-cover rounded-md"
+                className="object-contain rounded-md"
                 data-ai-hint={product.imageHint}
                 sizes="100vw"
               />
@@ -132,7 +132,7 @@ export function ProductCard({ product, isFavorite, onToggleFavorite, isInCart, o
                 src={product.imageUrls[0]}
                 alt={product.name}
                 fill
-                className="object-cover"
+                className="object-contain"
                 data-ai-hint={product.imageHint}
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
@@ -161,5 +161,3 @@ export function ProductCard({ product, isFavorite, onToggleFavorite, isInCart, o
     </Dialog>
   );
 }
-
-    
