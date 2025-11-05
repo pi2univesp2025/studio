@@ -12,19 +12,11 @@ import { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { useAuth, useFirestore, useUser } from '@/firebase';
+import { useAuth, useFirestore, useUser, useDoc, useCollection, useMemoFirebase } from '@/firebase';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { doc } from 'firebase/firestore';
+import { collection, doc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
-
-const initialCategories = [
-  'BLUSAS',
-  'VESTIDOS',
-  'CALÇAS',
-  'CALÇADOS',
-  'BOLSAS'
-];
 
 // Funções de conversão de cor
 function hexToRgb(hex: string) {
@@ -73,46 +65,46 @@ function hslToHex(h: number, s: number, l: number) {
   return `#${f(0)}${f(8)}${f(4)}`;
 }
 
+type Product = {
+  id: string;
+  name: string;
+  price: string;
+  discountPrice: string;
+  category: string;
+  imageUrls: string;
+  tags: string;
+};
 
 export default function AdmPage() {
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
   const firestore = useFirestore();
   const { toast } = useToast();
+  const userId = user?.uid;
 
+  // Firestore Refs
+  const siteConfigRef = useMemoFirebase(() => userId ? doc(firestore, 'siteConfig', userId) : null, [firestore, userId]);
+  const categoriesRef = useMemoFirebase(() => userId ? doc(firestore, 'categories', userId) : null, [firestore, userId]);
+  const productsQuery = useMemoFirebase(() => userId ? collection(firestore, 'users', userId, 'products') : null, [firestore, userId]);
+  const themeRef = useMemoFirebase(() => userId ? doc(firestore, 'users', userId, 'theme', 'settings') : null, [firestore, userId]);
+
+  // Firestore Data
+  const { data: siteConfigData } = useDoc(siteConfigRef);
+  const { data: categoriesData } = useDoc(categoriesRef);
+  const { data: productsData } = useCollection(productsQuery);
+  const { data: themeData } = useDoc(themeRef);
+
+  // Component State
   const [siteName, setSiteName] = useState('Protótipo');
-  const [aboutMe, setAboutMe] = useState("Bem-vindo ao Protótipo, o seu destino para encontrar peças únicas e cheias de estilo! Nascemos da paixão por moda sustentável e da vontade de criar uma comunidade que valoriza a qualidade e a originalidade.");
-
-  const [categories, setCategories] = useState(initialCategories.map((cat, index) => ({ id: `cat-${index}`, content: cat })));
-  
-  const [products, setProducts] = useState([
-    { 
-      id: 'prod-1',
-      name: 'Blusa Estilosa', 
-      price: 'R$ 89,90',
-      discountPrice: '',
-      category: 'BLUSAS',
-      imageUrls: 'https://picsum.photos/seed/tshirt1/400/500\nhttps://picsum.photos/seed/tshirt2/400/500\nhttps://picsum.photos/seed/tshirt3/400/500',
-      tags: 'blusa, estilosa, feminina'
-    },
-    { 
-      id: 'prod-2',
-      name: 'Calça Jeans',
-      price: 'R$ 129,90',
-      discountPrice: '',
-      category: 'CALÇAS',
-      imageUrls: 'https://picsum.photos/seed/jeans1/400/500\nhttps://picsum.photos/seed/jeans2/400/500\nhttps://picsum.photos/seed/jeans3/400/500',
-      tags: 'calça, jeans, masculina'
-    },
-  ]);
-
+  const [aboutMe, setAboutMe] = useState("Bem-vindo ao Protótipo...");
+  const [categories, setCategories] = useState<{ id: string; content: string }[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [lightPrimary, setLightPrimary] = useState('240 5.9% 10%');
   const [lightBackground, setLightBackground] = useState('0 0% 100%');
   const [lightAccent, setLightAccent] = useState('0 0% 96.1%');
   const [darkPrimary, setDarkPrimary] = useState('0 0% 98%');
   const [darkBackground, setDarkBackground] = useState('240 10% 3.9%');
   const [darkAccent, setDarkAccent] = useState('0 0% 14.9%');
-
   const [colorFormat, setColorFormat] = useState('hsl');
 
   // Sign in anonymously if not logged in
@@ -121,6 +113,47 @@ export default function AdmPage() {
       initiateAnonymousSignIn(auth);
     }
   }, [isUserLoading, user, auth]);
+
+  // Hydrate state from Firestore
+  useEffect(() => {
+    if (siteConfigData) {
+      setSiteName(siteConfigData.siteName || 'Protótipo');
+      setAboutMe(siteConfigData.aboutUs || "Bem-vindo ao Protótipo...");
+    }
+  }, [siteConfigData]);
+
+  useEffect(() => {
+    if (categoriesData) {
+      setCategories((categoriesData.items || []).map((cat: string, index: number) => ({ id: `cat-${index}`, content: cat })));
+    }
+  }, [categoriesData]);
+
+  useEffect(() => {
+    if (productsData) {
+      const formattedProducts: Product[] = productsData.map((p: any) => ({
+        id: p.id,
+        name: p.title || 'Novo Produto',
+        price: p.price ? `R$ ${p.price.toFixed(2).replace('.', ',')}` : 'R$ 0,00',
+        discountPrice: p.discountPrice ? `R$ ${p.discountPrice.toFixed(2).replace('.', ',')}` : '',
+        category: p.category || '',
+        imageUrls: Array.isArray(p.thumbnailImageUrls) ? p.thumbnailImageUrls.join('\n') : '',
+        tags: Array.isArray(p.tags) ? p.tags.join(', ') : '',
+      }));
+      setProducts(formattedProducts);
+    }
+  }, [productsData]);
+
+  useEffect(() => {
+    if (themeData) {
+      setLightPrimary(themeData.light?.primary || '240 5.9% 10%');
+      setLightBackground(themeData.light?.background || '0 0% 100%');
+      setLightAccent(themeData.light?.accent || '0 0% 96.1%');
+      setDarkPrimary(themeData.dark?.primary || '0 0% 98%');
+      setDarkBackground(themeData.dark?.background || '240 10% 3.9%');
+      setDarkAccent(themeData.dark?.accent || '0 0% 14.9%');
+    }
+  }, [themeData]);
+
 
   const handleSaveChanges = () => {
     if (!user) {
@@ -132,53 +165,43 @@ export default function AdmPage() {
       return;
     }
 
-    const db = firestore;
     const userId = user.uid;
 
-    const siteConfigData = {
-      siteName,
-      aboutUs: aboutMe,
-    };
-    const siteConfigRef = doc(db, 'siteConfig', userId);
-    setDocumentNonBlocking(siteConfigRef, siteConfigData, { merge: true });
-
-    const categoriesData = {
-      items: categories.map(c => c.content)
+    if (siteConfigRef) {
+        setDocumentNonBlocking(siteConfigRef, { siteName, aboutUs: aboutMe }, { merge: true });
     }
-    const categoriesRef = doc(db, 'categories', userId);
-    setDocumentNonBlocking(categoriesRef, categoriesData, { merge: true });
+    
+    if (categoriesRef) {
+        setDocumentNonBlocking(categoriesRef, { items: categories.map(c => c.content) }, { merge: true });
+    }
 
     products.forEach(product => {
-      const productRef = doc(db, 'users', userId, 'products', product.id);
+      const productRef = doc(firestore, 'users', userId, 'products', product.id);
+      const priceNumber = parseFloat(product.price.replace('R$ ', '').replace(',', '.')) || 0;
+      const discountPriceNumber = product.discountPrice ? parseFloat(product.discountPrice.replace('R$ ', '').replace(',', '.')) : undefined;
+
       const productData = {
         id: product.id,
         title: product.name,
-        price: parseFloat(product.price.replace('R$ ', '').replace(',', '.')),
+        price: priceNumber,
+        ...(discountPriceNumber && { discountPrice: discountPriceNumber }),
         category: product.category,
         description: '', // Placeholder
-        imageUrl: product.imageUrls.split(/[\n,]/)[0].trim(),
+        imageUrl: product.imageUrls.split(/[\n,]/)[0]?.trim() || '',
         thumbnailImageUrls: product.imageUrls.split(/[\n,]/).map(url => url.trim()).filter(url => url),
-        tags: product.tags.split(',').map(t => t.trim()),
+        tags: product.tags.split(',').map(t => t.trim()).filter(t => t),
       };
       setDocumentNonBlocking(productRef, productData, { merge: true });
     });
     
-    const themeData = {
-      id: userId,
-      light: {
-        primary: lightPrimary,
-        background: lightBackground,
-        accent: lightAccent,
-      },
-      dark: {
-        primary: darkPrimary,
-        background: darkBackground,
-        accent: darkAccent,
-      }
-    };
-    const themeRef = doc(db, 'users', userId, 'theme', 'settings');
-    setDocumentNonBlocking(themeRef, themeData, { merge: true });
-
+    if (themeRef) {
+        const themeData = {
+          id: userId,
+          light: { primary: lightPrimary, background: lightBackground, accent: lightAccent },
+          dark: { primary: darkPrimary, background: darkBackground, accent: darkAccent },
+        };
+        setDocumentNonBlocking(themeRef, themeData, { merge: true });
+    }
 
     toast({
       title: "Sucesso!",
@@ -195,7 +218,7 @@ export default function AdmPage() {
   }
   
   const handleAddCategory = () => {
-    const newId = `cat-${categories.length + 1}`;
+    const newId = `cat-${Date.now()}`;
     setCategories([...categories, { id: newId, content: 'Nova Categoria' }]);
   };
 
@@ -204,14 +227,14 @@ export default function AdmPage() {
   };
   
   const handleAddProduct = () => {
-    const newId = `prod-${products.length + 1}`;
+    const newId = `prod-${Date.now()}`;
     setProducts([...products, {
       id: newId,
       name: 'Novo Produto',
       price: 'R$ 0,00',
       discountPrice: '',
       category: categories.length > 0 ? categories[0].content : '',
-      imageUrls: '',
+      imageUrls: 'https://picsum.photos/seed/new_product/400/500',
       tags: ''
     }]);
   };
