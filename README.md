@@ -62,9 +62,9 @@ ou
 pnpm dev
 ```
 
-Isso iniciará o servidor de desenvolvimento, e você poderá visualizar sua aplicação abrindo seu navegador `http://localhost:3000`.
+Isso iniciará o servidor de desenvolvimento, e você poderá visualizar sua aplicação abrindo seu navegador em `http://localhost:3000`.
 
-## Technologies Utilizadas
+## Tecnologias Utilizadas
 
 Este projeto é construído com as seguintes tecnologias:
 
