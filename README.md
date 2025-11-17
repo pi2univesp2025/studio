@@ -14,4 +14,5 @@ Tecnologias usadas: HTML5, CSS 3, TypeScript, React, NextJS, FireBase
 
 Estudantes: Ailton Pereira Macedo, Everton Rafael Antunes Gabriel Silva Caldeira, Jhonatan Souza Santos, Pedro Henrique Barbosa Pereira, Ronaldo Ferreira dos Santos, Valneide Campos Rocha, Vitor Ferreira da Silva
 
-https://youtu.be/rUE58IHut2U
+## Vídeo de Apresentação
+Segue o link do vídeo de apresentação do projeto: [https://youtu.be/rUE58IHut2U](https://youtu.be/rUE58IHut2U)
