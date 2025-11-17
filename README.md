@@ -16,61 +16,61 @@ Estudantes: Ailton Pereira Macedo, Everton Rafael Antunes Gabriel Silva Caldeira
 
 # Firebase Studio
 
-This is a NextJS starter in Firebase Studio.
+Este é um template inicial (starter) NextJS no Firebase Studio.
 
-To get started, take a look at src/app/page.tsx.
+Para começar, dê uma olhada em src/app/page.tsx.
 
-## Getting Started
+## Começando
 
-### Installation
+### Instalação
 
-To install the project dependencies, run one of the following commands in your terminal:
+Para instalar as dependências do projeto, execute um dos seguintes comandos no seu terminal:
 
 ```bash
 npm install
 ```
 
-or
+ou
 
 ```bash
 yarn install
 ```
 
-or
+ou
 
 ```bash
 pnpm install
 ```
 
-### Running the Development Server
+### Rodando o Servidor de Desenvolvimento
 
-Once the dependencies are installed, you can start the development server with the following command:
+Assim que as dependências estiverem instaladas, você pode iniciar o servidor de desenvolvimento com o seguinte comando:
 
 ```bash
 npm run dev
 ```
 
-or
+ou
 
 ```bash
 yarn dev
 ```
 
-or
+ou
 
 ```bash
 pnpm dev
 ```
 
-This will start the development server, and you can view your application by opening your browser to `http://localhost:3000`.
+Isso iniciará o servidor de desenvolvimento, e você poderá visualizar sua aplicação abrindo seu navegador `http://localhost:3000`.
 
-## Technologies Used
+## Technologies Utilizadas
 
-This project is built with the following technologies:
+Este projeto é construído com as seguintes tecnologias:
 
 *   **Framework:** [Next.js](https://nextjs.org/)
-*   **Language:** [TypeScript](https://www.typescriptlang.org/)
-*   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-*   **UI Components:** [Shadcn/ui](https://ui.shadcn.com/)
+*   **Linguagem:** [TypeScript](https://www.typescriptlang.org/)
+*   **Estilização:** [Tailwind CSS](https://tailwindcss.com/)
+*   **Componentes de UI:** [Shadcn/ui](https://ui.shadcn.com/)
 *   **Backend:** [Firebase](https://firebase.google.com/)
-*   **AI:** [Genkit](https://firebase.google.com/docs/genkit)
+*   **IA:** [Genkit](https://firebase.google.com/docs/genkit)
