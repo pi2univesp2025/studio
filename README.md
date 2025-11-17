@@ -1,4 +1,4 @@
-# PROJETO INTEGRADOR EM COMPUTAÇÃO 2 - DESCRIÇÃO
+# PROJETO INTEGRADOR EM COMPUTAÇÃO 2
 
 Objetivo: Desenvolver um software com framework web que utilize noções de banco de dados, praticando controle de versão e requisições API.
 
